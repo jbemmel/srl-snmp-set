@@ -9,7 +9,7 @@ The Perl module requires the following packages to be installed:
 `sudo yum install -y net-snmp-perl gnmic` (using containerlab, you may need to reduce the default system interface MTU to 1400)
 
 * Place the following content in /usr/share/snmp/snmp_perl.pl:
-    ##
+````##
     ## SNMPD perl initialization file.
     ##
 
