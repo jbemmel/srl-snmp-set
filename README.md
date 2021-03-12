@@ -23,7 +23,7 @@ The Perl module requires the following packages to be installed:
 * Copy the file snmp_write_handler.pl to /usr/share/snmp/snmp_write_handler.pl
 * Temporarily edit /etc/snmp/snmpd.conf_mgmt to include:
 ````
-    access custom_grp "" any noauth exact sys2view **rwview** none
+    access custom_grp "" any noauth exact sys2view rwview none      # Edit this line, note 'rwview'
     view rwview included interfaces.ifTable.ifEntry.ifAdminStatus
     perl do "/usr/share/snmp/snmp_write_handler.pl";
 ````
