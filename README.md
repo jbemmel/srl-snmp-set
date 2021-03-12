@@ -33,3 +33,6 @@ The Perl module requires the following packages to be installed:
 ````
     Enable:  snmpset -v 2c -c private 172.20.20.3 ifAdminStatus.54 i 1
     Disable: snmpset -v 2c -c private 172.20.20.3 ifAdminStatus.54 i 2
+
+# Limitations
+The code converts an ifindex into ethernet-1/x; this is not ideal. It would be better if the ifindex could be used directly.
