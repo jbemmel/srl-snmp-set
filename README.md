@@ -9,7 +9,8 @@ The Perl module requires the following packages to be installed:
 `sudo yum install -y net-snmp-perl gnmic` (using containerlab, you may need to reduce the default system interface MTU to 1400)
 
 * Place the following content in /usr/share/snmp/snmp_perl.pl:
-````##
+````
+    ##
     ## SNMPD perl initialization file.
     ##
 
@@ -17,3 +18,9 @@ The Perl module requires the following packages to be installed:
     $agent = new NetSNMP::agent('dont_init_agent' => 1,
                                 'dont_init_lib' => 1);
 
+* Copy the file snmp_write_handler.pl to /usr/share/snmp/snmp_write_handler.pl
+* Temporarily edit /etc/snmp/ to include:
+````
+    access custom_grp "" any noauth exact sys2view **rwview** none
+    view rwview included interfaces.ifTable.ifEntry.ifAdminStatus
+    perl do "/usr/share/snmp/snmp_write_handler.pl";
