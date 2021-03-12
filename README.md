@@ -17,7 +17,7 @@ The Perl module requires the following packages to be installed:
     use NetSNMP::agent;
     $agent = new NetSNMP::agent('dont_init_agent' => 1,
                                 'dont_init_lib' => 1);
-
+````
 * Copy the file snmp_write_handler.pl to /usr/share/snmp/snmp_write_handler.pl
 * Temporarily edit /etc/snmp/ to include:
 ````
