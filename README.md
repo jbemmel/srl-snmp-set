@@ -27,6 +27,9 @@ The Perl module requires the following packages to be installed:
     view rwview included interfaces.ifTable.ifEntry.ifAdminStatus
     perl do "/usr/share/snmp/snmp_write_handler.pl";
 ````
+  Note that the above configuration will get overwritten upon reboot or change of SNMP configuration.
+  To make these settings persistent, note that one can use 'includeDir' or 'includeFile' directives
+
 * Restart the SNMP daemon by sending it a HUP signal, to reload the config
 
 # Usage
