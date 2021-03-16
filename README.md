@@ -5,7 +5,14 @@ Nokia SRLinux comes with an SNMP module based on https://github.com/net-snmp/net
 For example, some people have a use case for enabling and disabling interfaces via SNMP. net-snmp has support for various extensions to do this, in this example we will be using a custom Perl module.
 
 # Prerequisites
-This tutorial assumes you have SNMP up and running; if not, see SRL User manual
+Enable SNMP in SRLinux:
+````
+enter candidate
+system snmp
+community private
+network-instance mgmt admin-state enable source-address [172.20.20.3]
+commit now
+````
 
 The Perl module requires the following packages to be installed:
 `sudo yum install -y net-snmp-perl gnmic` (using containerlab, you may need to reduce the default system interface MTU to 1400)
