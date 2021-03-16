@@ -15,7 +15,10 @@ commit now
 ````
 
 The Perl module requires the following packages to be installed:
-`sudo yum install -y net-snmp-perl gnmic` (using containerlab, you may need to reduce the default system interface MTU to 1400)
+````
+curl -sL https://github.com/karimra/gnmic/raw/master/install.sh | sudo bash
+sudo yum install -y net-snmp-perl
+````
 
 * Place the following content in /usr/share/snmp/snmp_perl.pl:
 ````
