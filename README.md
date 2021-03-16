@@ -20,16 +20,6 @@ curl -sL https://github.com/karimra/gnmic/raw/master/install.sh | sudo bash
 sudo yum install -y net-snmp-perl
 ````
 
-* Place the following content in /usr/share/snmp/snmp_perl.pl:
-````
-    ##
-    ## SNMPD perl initialization file.
-    ##
-
-    use NetSNMP::agent;
-    $agent = new NetSNMP::agent('dont_init_agent' => 1,
-                                'dont_init_lib' => 1);
-````
 * Copy the file snmp_write_handler.pl to /usr/share/snmp/snmp_write_handler.pl
 * Temporarily edit /etc/snmp/snmpd.conf_mgmt to include:
 ````
