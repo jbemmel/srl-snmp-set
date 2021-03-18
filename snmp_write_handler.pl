@@ -16,10 +16,9 @@ sub myhandler {
         print STDERR "$program @ $oid ";
         if ($request_info->getMode() == MODE_SET) {
           my $ifindex = (split '\.', $oid)[-1];
-          my $eth = $ifindex - 53;  # Eth1/1 == ifindex 54
           # 1 = enable, 2 = disable (int)
           my $val = ($request->getValue() == 1) ? "enable" : "disable";
-          system("/usr/local/bin/gnmic -a 127.0.0.1:57400 -u admin -p admin --skip-verify set --update-path /interface[name=ethernet-1/$eth]/admin-state --update-value $val -e json_ietf")
+          system("/usr/local/bin/gnmic-set-ifstatus.sh $ifindex $val")
         }
     }
 }
