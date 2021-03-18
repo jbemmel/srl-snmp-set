@@ -14,10 +14,11 @@ network-instance mgmt admin-state enable source-address [172.20.20.3]
 commit now
 ````
 
-The Perl module requires the following packages to be installed:
+The Perl module and shell script requires the following packages to be installed:
 ````
 curl -sL https://github.com/karimra/gnmic/raw/master/install.sh | sudo bash
-sudo yum install -y net-snmp-perl
+sudo yum install -y epel-release
+sudo yum install -y net-snmp-perl jq
 ````
 
 * Copy the file snmp_write_handler.pl to /usr/share/snmp/snmp_write_handler.pl
