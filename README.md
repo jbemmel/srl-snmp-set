@@ -22,6 +22,7 @@ sudo yum install -y net-snmp-perl jq
 ````
 
 * Copy the file snmp_write_handler.pl to /usr/share/snmp/snmp_write_handler.pl
+* Copy the file gnmic_set_ifstatus.sh to /usr/local/bin/, use chmod 755 to make it executable
 * Temporarily edit /etc/snmp/snmpd.conf_mgmt to include:
 ````
     access custom_grp "" any noauth exact sys2view rwview none      # Edit this line, note 'rwview'
