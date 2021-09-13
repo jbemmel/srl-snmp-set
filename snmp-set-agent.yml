@@ -12,5 +12,5 @@ snmp_set_agent:
        names:
            - "snmp-set-agent"
        source-directories:
-           - "/opt/srlinux/agents/snmp-set-agent/models/"
+           - "./models/"
            - "/opt/srlinux/models/srl_nokia/models/system/"
