@@ -10,7 +10,7 @@ Enable SNMP in SRLinux:
 enter candidate
 system snmp
 community private
-network-instance mgmt admin-state enable source-address [172.20.20.3]
+network-instance mgmt admin-state enable source-address [172.20.20.2]
 commit now
 ````
 
