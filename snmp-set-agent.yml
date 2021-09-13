@@ -15,3 +15,4 @@ snmp_set_agent:
            - "/opt/srlinux/agents/snmp-set/models/"
            - "/opt/srlinux/models/srl_nokia/models/common/"
            - "/opt/srlinux/models/srl_nokia/models/system/"
+           - "/opt/srlinux/models/srl_nokia/models/network-instance/"
