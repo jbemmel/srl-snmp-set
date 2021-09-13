@@ -36,8 +36,8 @@ sudo yum install -y net-snmp-perl jq
 
 # Usage
 ````
-    Enable:  snmpset -v 2c -c private 172.20.20.3 ifAdminStatus.54 i 1
-    Disable: snmpset -v 2c -c private 172.20.20.3 ifAdminStatus.54 i 2
+    Enable:  snmpset -v 2c -c private 172.20.20.2 ifAdminStatus.54 i 1
+    Disable: snmpset -v 2c -c private 172.20.20.2 ifAdminStatus.54 i 2
 ````
 
 # Limitations
