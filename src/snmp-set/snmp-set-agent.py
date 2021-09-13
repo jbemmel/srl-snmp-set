@@ -5,20 +5,14 @@ import grpc
 import datetime
 import sys
 import logging
-import socket
 import os
-import re
-import ipaddress
+import time
 import json
 import signal
-import subprocess
-import traceback
 
 import sdk_service_pb2
 import sdk_service_pb2_grpc
-import lldp_service_pb2
 import config_service_pb2
-import sdk_common_pb2
 
 from logging.handlers import RotatingFileHandler
 
@@ -89,16 +83,16 @@ def EnableSNMPSetInterface( network_instance ):
           'perl do "/opt/srlinux/agents/snmp-set/scripts/snmp_write_handler.pl";' )
         f.write( new_conf )
 
-    # Restart SNMP daemon
+    # Restart SNMP daemon (the one using that conf file)
     logging.info( "Restarting SNMP daemon..." )
-    os.system("ps -C srl_snmpd -o pid=|xargs kill -hup")
+    os.system(f"ps -AlF | grep {conf_file} | awk '/snmp_server/ {{ print $4 }}'|xargs kill -hup")
 
 ##################################################################
 ## Proc to process the config Notifications received by snmp-set agent
 ## At present processing config from js_path = .fib-agent
 ##################################################################
 def Handle_Notification(obj):
-    if obj.HasField('config') and obj.config.key.js_path != ".commit.end":
+    if obj.HasField('config'):
         logging.info(f"GOT CONFIG :: {obj.config.key.js_path}")
         if obj.config.key.js_path == ".system.snmp.network_instance":
             ni_name = obj.config.key.keys[0]
@@ -111,18 +105,20 @@ def Handle_Notification(obj):
                 response=stub.AgentUnRegister(request=sdk_service_pb2.AgentRegistrationRequest(), metadata=metadata)
                 logging.info('Handle_Config: Unregister response:: {}'.format(response))
             else:
-                json_acceptable_string = obj.config.data.json.replace("'", "\"")
-                data = json.loads(json_acceptable_string)
-                if 'enable_set_interface' in data:
-                    enable = data['enable_set_interface']['value']
+                data = json.loads(obj.config.data.json)
+                if 'network_instance' in data:
+                  ni = data['network_instance']
+                  if 'enable_set_interface' in ni:
+                    enable = ni['enable_set_interface']['value']
                     if enable:
-                        EnableSNMPSetInterface( ni_name )
-                return True
+                        logging.info( f"Enabling SNMP SET for net_inst={ni_name}" )
+                        return ni_name
+                logging.info( f"NOT enabling SNMP SET; data={data}" )
 
     else:
         logging.info(f"Unexpected notification : {obj}")
 
-    return False
+    return None
 
 ##################################################################################################
 ## This is the main proc where all processing for auto_config_agent starts.
@@ -148,14 +144,21 @@ def Run():
 
     count = 1
     try:
+        net_instances = {}
         for r in stream_response:
             logging.info(f"Count :: {count}  NOTIFICATION:: \n{r.notification}")
             count += 1
             for obj in r.notification:
                 if obj.HasField('config') and obj.config.key.js_path == ".commit.end":
-                    logging.info('TO DO -commit.end config')
+                    logging.info( f"COMMIT: {net_instances}" )
+                    if len(net_instances) > 0:
+                        logging.info( f"Enabling SNMP set for: {net_instances}" )
+                        for ni in net_instances.values():
+                            EnableSNMPSetInterface(ni)
                 else:
-                    Handle_Notification(obj)
+                    net_instance = Handle_Notification(obj)
+                    if net_instance is not None:
+                        net_instances[ net_instance ] = True
 
     except Exception as e:
         traceback_str = ''.join(traceback.format_tb(e.__traceback__))
