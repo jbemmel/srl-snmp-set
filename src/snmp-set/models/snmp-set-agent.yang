@@ -1,0 +1,28 @@
+module snmp-set-agent {
+
+    yang-version "1";
+
+    namespace "urn:srl_nokia_ext/snmp-set";
+
+    prefix "srl_nokia-snmp-set";
+
+    import srl_nokia-snmp {
+        prefix srl_nokia-snmp;
+    }
+    import srl_nokia-system {
+      prefix srl-system;
+    }
+
+    revision "2021-09-13" {
+        description "Initial revision";
+        reference "TBD";
+    }
+
+    // Augment the system snmp config to add a flag
+    augment "/srl-system:system/srl_nokia-snmp:snmp/srl_nokia-snmp:network-instance" {
+       leaf enable-set-interface {
+         description "Custom extension to enable/disable interfaces via SNMP SET";
+         type boolean;
+       }
+    }
+}
