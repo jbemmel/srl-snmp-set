@@ -6,6 +6,7 @@ import datetime
 import sys
 import logging
 import os
+import re
 import time
 import json
 import signal
@@ -76,12 +77,17 @@ def EnableSNMPSetInterface( network_instance ):
        time.sleep(1)
 
     try:
-      with file.open( conf_file, "w+" ) as f:
-        conf = f.read()
-        new_conf = conf.replace( "^access custom_grp .* none none$",
-          'access custom_grp "" any noauth exact sys2view rwview none\n' +
-          'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
-          'perl do "/opt/srlinux/agents/snmp-set/scripts/snmp_write_handler.pl";' )
+      from pathlib import Path
+      conf = Path(conf_file).read_text()
+      logging.info( f"Old conf: \n{conf}" )
+      new_conf = re.sub( r"access custom_grp .* none none",
+       'access custom_grp "" any noauth exact sys2view rwview none\n' +
+       'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
+       'perl do "/opt/srlinux/agents/snmp-set/scripts/snmp_write_handler.pl";\n',
+       conf )
+      logging.info( f"New conf: \n{new_conf}" )
+
+      with open( conf_file, "w+" ) as f:
         f.write( new_conf )
 
       # Restart SNMP daemon (the one using that conf file)

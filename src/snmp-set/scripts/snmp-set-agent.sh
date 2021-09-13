@@ -31,9 +31,6 @@ function main()
     SDK2="/usr/lib/python3.6/site-packages/sdk_protos"
     export PYTHONPATH="$P1:$P2:$NDK:$SDK2:$PYTHONPATH"
 
-    export http_proxy=""
-    export https_proxy=""
-    export no_proxy=""
     python3 ${main_module} &
 
     child=$!
