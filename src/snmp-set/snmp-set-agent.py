@@ -153,7 +153,7 @@ def Run():
                     logging.info( f"COMMIT: {net_instances}" )
                     if len(net_instances) > 0:
                         logging.info( f"Enabling SNMP set for: {net_instances}" )
-                        for ni in net_instances.values():
+                        for ni in net_instances:
                             EnableSNMPSetInterface(ni)
                 else:
                     net_instance = Handle_Notification(obj)
