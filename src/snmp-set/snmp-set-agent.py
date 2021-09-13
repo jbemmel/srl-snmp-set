@@ -75,17 +75,20 @@ def EnableSNMPSetInterface( network_instance ):
        logging.info( f"Waiting for {conf_file} to be created...")
        time.sleep(1)
 
-    with file.open( conf_file, "w+" ) as f:
+    try:
+      with file.open( conf_file, "w+" ) as f:
         conf = f.read()
-        new_conf = conf.replace( "^access custom_grp .*$",
+        new_conf = conf.replace( "^access custom_grp .* none none$",
           'access custom_grp "" any noauth exact sys2view rwview none\n' +
           'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
           'perl do "/opt/srlinux/agents/snmp-set/scripts/snmp_write_handler.pl";' )
         f.write( new_conf )
 
-    # Restart SNMP daemon (the one using that conf file)
-    logging.info( "Restarting SNMP daemon..." )
-    os.system(f"ps -AlF | grep {conf_file} | awk '/snmp_server/ {{ print $4 }}'|xargs kill -hup")
+      # Restart SNMP daemon (the one using that conf file)
+      logging.info( "Restarting SNMP daemon..." )
+      os.system(f"ps -AlF | grep {conf_file} | awk '/snmp_server/ {{ print $4 }}'|xargs kill -hup")
+    except Exception as ex:
+      logging.error( ex )
 
 ##################################################################
 ## Proc to process the config Notifications received by snmp-set agent

@@ -1,7 +1,7 @@
 # See example_config.yml for an explanation of all the accepted fields
 snmp_set_agent:
    path: /opt/srlinux/agents/snmp-set/
-   launch-command: /opt/srlinux/agents/snmp-set/scripts/snmp-set-agent.sh
+   launch-command: sudo /opt/srlinux/agents/snmp-set/scripts/snmp-set-agent.sh
    search-command: python3 /opt/srlinux/agents/snmp-set/snmp-set-agent.py
    wait-for-config: Yes
    failure-threshold: 100
