@@ -8,10 +8,10 @@ For example, some people have a use case for enabling and disabling interfaces v
 Enable SNMP in SRLinux:
 ````
 enter candidate
-system snmp
+/system snmp
 community private
 network-instance mgmt admin-state enable source-address [172.20.20.2]
-commit now
+commit stay
 ````
 
 The Perl module and shell script requires the following packages to be installed:
@@ -35,16 +35,16 @@ sudo yum install -y net-snmp-perl jq
 * Restart the SNMP daemon by sending it a HUP signal, to reload the config
 
 # Usage
-The following examples assume interface ethernet-1/1 has index '54':
+The following examples assume interface lo0 has index 1073758206:
 
 ## Enable
 ```
-snmpset -v 2c -c private 172.20.20.2 ifAdminStatus.54 i 1
+snmpset -v 2c -c private 172.20.20.2 ifAdminStatus.1073758206 i 1
 ```
 
 ## Disable
 ```
-snmpset -v 2c -c private 172.20.20.2 ifAdminStatus.54 i 2
+snmpset -v 2c -c private 172.20.20.2 ifAdminStatus.1073758206 i 2
 ````
 
 # Limitations
