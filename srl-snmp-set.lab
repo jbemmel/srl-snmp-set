@@ -1,0 +1,12 @@
+name: snmp-set-lab
+
+topology:
+  kinds:
+    srl:
+      type: ixrd2 # See https://www.nokia.com/networks/products/7250-interconnect-router/
+      image: srl/snmp-set:latest
+      extras:
+        srl-agents: [ snmp-set-agent.yml ]
+
+  nodes:
+    leaf1:  { kind: srl }
