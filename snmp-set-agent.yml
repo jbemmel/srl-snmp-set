@@ -16,3 +16,4 @@ snmp_set_agent:
            - "/opt/srlinux/models/srl_nokia/models/common/"
            - "/opt/srlinux/models/srl_nokia/models/system/"
            - "/opt/srlinux/models/srl_nokia/models/network-instance/"
+           - "/opt/srlinux/models/srl_nokia/models/interfaces/"
