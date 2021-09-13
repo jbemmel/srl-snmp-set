@@ -35,9 +35,16 @@ sudo yum install -y net-snmp-perl jq
 * Restart the SNMP daemon by sending it a HUP signal, to reload the config
 
 # Usage
-````
-    Enable:  snmpset -v 2c -c private 172.20.20.2 ifAdminStatus.54 i 1
-    Disable: snmpset -v 2c -c private 172.20.20.2 ifAdminStatus.54 i 2
+The following examples assume interface ethernet-1/1 has index '54':
+
+## Enable
+```
+snmpset -v 2c -c private 172.20.20.2 ifAdminStatus.54 i 1
+```
+
+## Disable
+```
+snmpset -v 2c -c private 172.20.20.2 ifAdminStatus.54 i 2
 ````
 
 # Limitations
