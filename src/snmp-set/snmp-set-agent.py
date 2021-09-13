@@ -68,14 +68,40 @@ def Subscribe_Notifications(stream_id):
     # Subscribe to config changes, first
     Subscribe(stream_id, 'cfg')
 
+def EnableSNMPSetInterface( network_instance ):
+    """
+    Modifies the SNMP daemon configuration to enable SNMP set
+    """
+    logging.info( f"EnableSNMPSetInterface network-instance={network_instance}" )
+
+    conf_file = f'/etc/snmp/snmpd.conf_{network_instance}'
+
+    # Wait till it exists
+    while not os.path.exists( conf_file ):
+       logging.info( f"Waiting for {conf_file} to be created...")
+       time.sleep(1)
+
+    with file.open( conf_file, "w+" ) as f:
+        conf = f.read()
+        new_conf = conf.replace( "^access custom_grp .*$",
+          'access custom_grp "" any noauth exact sys2view rwview none\n' +
+          'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
+          'perl do "/opt/srlinux/agents/snmp-set/scripts/snmp_write_handler.pl";' )
+        f.write( new_conf )
+
+    # Restart SNMP daemon
+    logging.info( "Restarting SNMP daemon..." )
+    os.system("ps -C srl_snmpd -o pid=|xargs kill -hup")
+
 ##################################################################
 ## Proc to process the config Notifications received by snmp-set agent
 ## At present processing config from js_path = .fib-agent
 ##################################################################
-def Handle_Notification(obj, state):
+def Handle_Notification(obj):
     if obj.HasField('config') and obj.config.key.js_path != ".commit.end":
         logging.info(f"GOT CONFIG :: {obj.config.key.js_path}")
-        if "snmp" in obj.config.key.js_path:
+        if obj.config.key.js_path == ".system.snmp.network_instance":
+            ni_name = obj.config.key.keys[0]
             logging.info(f"Got config for agent, now will handle it :: \n{obj.config}\
                             Operation :: {obj.config.op}\nData :: {obj.config.data.json}")
             if obj.config.op == 2:
@@ -87,7 +113,10 @@ def Handle_Notification(obj, state):
             else:
                 json_acceptable_string = obj.config.data.json.replace("'", "\"")
                 data = json.loads(json_acceptable_string)
-
+                if 'enable_set_interface' in data:
+                    enable = data['enable_set_interface']['value']
+                    if enable:
+                        EnableSNMPSetInterface( ni_name )
                 return True
 
     else:
