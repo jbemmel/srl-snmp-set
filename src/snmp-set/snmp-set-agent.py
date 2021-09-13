@@ -159,7 +159,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGTERM, Exit_Gracefully)
     if not os.path.exists(stdout_dir):
         os.makedirs(stdout_dir, exist_ok=True)
-    log_filename = f'{agent_name}.log'.format(stdout_dir)
+    log_filename = f'{stdout_dir}/{agent_name}.log'
     logging.basicConfig(
       handlers=[RotatingFileHandler(log_filename, maxBytes=3000000,backupCount=5)],
       format='%(asctime)s,%(msecs)03d %(name)s %(levelname)s %(message)s',
