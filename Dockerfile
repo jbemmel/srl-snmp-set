@@ -1,5 +1,7 @@
+ARG SR_BASEIMG
 ARG SR_LINUX_RELEASE
-FROM ghcr.io/nokia/srlinux:$SR_LINUX_RELEASE
+
+FROM $SR_BASEIMG:$SR_LINUX_RELEASE AS target
 
 RUN sudo curl -sL https://github.com/karimra/gnmic/releases/download/v0.18.0/gnmic_0.18.0_Linux_x86_64.rpm -o /tmp/gnmic.rpm && sudo yum localinstall -y /tmp/gnmic.rpm
 
