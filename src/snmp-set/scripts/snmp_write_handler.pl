@@ -1,10 +1,10 @@
 use NetSNMP::OID (':all');
 use NetSNMP::agent (':all');
-use NetSNMP::ASN (':all');
+# use NetSNMP::ASN (':all');
 
-    #
-    # Handler routine to deal with SNMP requests
-    #
+#
+# Handler routine to deal with SNMP requests
+#
 sub myhandler {
     my  ($handler, $registration_info, $request_info, $requests) = @_;
 
@@ -13,11 +13,12 @@ sub myhandler {
         #  Work through the list of varbinds
         #
         $oid = $request->getOID();
-        print STDERR "$program @ $oid ";
+        print STDERR "\n$program @ $oid";
         if ($request_info->getMode() == MODE_SET) {
           my $ifindex = (split '\.', $oid)[-1];
           # 1 = enable, 2 = disable (int)
           my $val = ($request->getValue() == 1) ? "enable" : "disable";
+          print STDERR "\nCalling gnmic-set-ifstatus.sh SET $oid $ifindex = $val";
           system("/opt/srlinux/agents/snmp-set/scripts/gnmic-set-ifstatus.sh $ifindex $val")
         }
     }

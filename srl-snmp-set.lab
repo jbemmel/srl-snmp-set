@@ -9,4 +9,4 @@ topology:
         srl-agents: [ snmp-set-agent.yml ]
 
   nodes:
-    leaf1:  { kind: srl }
+    leaf1:  { kind: srl, startup-config: leaf.cfg.json }

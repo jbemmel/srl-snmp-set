@@ -81,6 +81,7 @@ def EnableSNMPSetInterface( network_instance ):
       conf = Path(conf_file).read_text()
       logging.info( f"Old conf: \n{conf}" )
       new_conf = re.sub( r"access custom_grp .* none none",
+       '# Custom config by snmp-set-agent to enable interface up/down\n' +
        'access custom_grp "" any noauth exact sys2view rwview none\n' +
        'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
        'perl do "/opt/srlinux/agents/snmp-set/scripts/snmp_write_handler.pl";\n',
