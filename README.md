@@ -39,13 +39,32 @@ The following examples assume interface lo0 has index 1073758206:
 
 ## Enable
 ```
-snmpset -v 2c -c private 172.20.20.2 ifAdminStatus.1073758206 i 1
+snmpset -v 2c -c private 172.20.20.2 .1.3.6.1.2.1.2.2.1.7.1073758206 i 1
 ```
+You may be able to use 'ifAdminStatus' instead of the OID '.1.3.6.1.2.1.2.2.1.7' when the corresponding SNMP MIBs are installed
 
 ## Disable
 ```
-snmpset -v 2c -c private 172.20.20.2 ifAdminStatus.1073758206 i 2
+snmpset -v 2c -c private 172.20.20.2 .1.3.6.1.2.1.2.2.1.7.1073758206 i 2
 ````
 
-# Limitations
-The configuration is not persisted across reboots
+## Limitations
+When done manually, the configuration is not persisted across reboots
+
+# Agent
+In order to overcome the limitations of manual configuration and to make things manageable through a single configuration file, a sample Python agent is included.
+This agent performs the necessary SNMP configuration as described above, when enabled:
+```
+A:leaf1# /system snmp                                                                                                                                                                                              
+--{ + running }--[ system snmp ]--                                                                                                                                                                                 
+A:leaf1# info                                                                                                                                                                                                      
+    community $aes$73MtC3Nkc1zg=$hxMfoH62G7g5IgBMzT46vg==
+    network-instance mgmt {
+        admin-state enable
+        enable-set-interface true  !!! Agent enabled
+        source-address [
+            172.20.20.2
+        ]
+    }
+```
+
