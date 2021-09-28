@@ -19,7 +19,7 @@ sub myhandler {
           # 1 = enable, 2 = disable (int)
           my $val = ($request->getValue() == 1) ? "enable" : "disable";
           print STDERR "\nCalling gnmic-set-ifstatus.sh SET $oid $ifindex = $val";
-          system("/opt/srlinux/agents/snmp-set/scripts/gnmic-set-ifstatus.sh $ifindex $val")
+          system("/opt/demo-agents/snmp-set/scripts/gnmic-set-ifstatus.sh $ifindex $val")
         }
     }
 }
