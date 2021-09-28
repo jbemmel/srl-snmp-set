@@ -68,3 +68,5 @@ A:leaf1# info
     }
 ```
 
+## Notes
+It would be possible to implement this functionality purely in Perl; a project like https://metacpan.org/pod/Google::ProtocolBuffers::Dynamic might help
