@@ -35,30 +35,31 @@ sub get_bgp_mib {
 	my %mib_next = ();
 	my $prev;
 	foreach ($mib_entries) {
-		my($suboid, $val) = /(\S+)=(.*)/;
-    $mib_hash{$suboid} = $val;
-		if defined($prev) {
-			$mib_next{$prev} = $suboid;
-		}
-		$prev = $suboid;
-		next;
+	    my($suboid, $val) = /(\S+)=(.*)/;
+            $mib_hash{$suboid} = $val;
+	    if defined($prev) {
+		$mib_next{$prev} = $suboid;
+	    }
+	    $prev = $suboid;
+	    next;
 	}
 
 	for(my $request = $requests; $request; $request = $request->next()) {
-		my $oid = $request->getOID();
+	   my $oid = $request->getOID();
 
-    my $mode = $request_info->getMode();
-    if ($mode == MODE_GETNEXT) {
-				if defined($mib_next{$oid}) {
-			    $request->setOID($mib_next{$oid});
-				}
-			  $mode = MODE_GET;
-		}
-		if ($mode == MODE_GET) {
-			next if !defined($mib_hash{$oid});
-			$request->setValue(ASN_OCTET_STR, $mib_hash{$oid});
-		}
-    next;
+           my $mode = $request_info->getMode();
+           if ($mode == MODE_GETNEXT) {
+	      if defined($mib_next{$oid}) {
+	         $request->setOID($mib_next{$oid});
+	      }
+	      $mode = MODE_GET;
+	   }
+	   if ($mode == MODE_GET) {
+	      next if !defined($mib_hash{$oid});
+	      $request->setValue(ASN_OCTET_STR, $mib_hash{$oid});
+	   }
+           next;
+        }
 }
 
 $agent->register('BGP MIB', $oid_bgp, \&get_bgp_mib);
