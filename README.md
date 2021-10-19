@@ -79,6 +79,11 @@ BGP4-MIB::bgp = No Such Object available on this agent at this OID
 --{ + candidate shared default }--[ system snmp network-instance mgmt ]-- 
 ```
 
+The desired output is something like this:
+```
+bash "gnmic -a 172.20.20.11 -u admin -p admin --skip-verify -e json_ietf get --path /network-instance[name=default]/protocols/bgp/neighbor[peer-address=*]/session-state"
+```
+
 
 
 ## Notes
