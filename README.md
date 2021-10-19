@@ -1,8 +1,8 @@
 # How to use Perl and gNMIc to extend the SRLinux net-snmp module with SET commands to enable/disable interfaces
 
-Nokia SRLinux comes with an SNMP module based on https://github.com/net-snmp/net-snmp. However, the default configuration only supports read access, and sometimes that is not enough.
+Nokia SRLinux comes with an SNMP module based on https://github.com/net-snmp/net-snmp. However, the default configuration only supports read access to a small set of OIDs, and sometimes that is not enough. Moreover, SR Linux uses a custom built binary at '/opt/srlinux/bin/snmp_server' which is locked down for security purposes; it lacks common modules such as 'exec' or 'pass' to add custom scripts.
 
-For example, some people have a use case for enabling and disabling interfaces via SNMP. net-snmp has support for various extensions to do this, in this example we will be using a custom Perl module.
+Some people have a use case for enabling and disabling interfaces via SNMP. net-snmp has support for various extensions to do this, in this example we will be using a custom Perl module.
 
 # Prerequisites
 Enable SNMP in SRLinux:
@@ -67,6 +67,19 @@ A:leaf1# info
         ]
     }
 ```
+
+# Extending the SNMP GET MIB
+Let's say you want to add support for a specific MIB. For example: the BGP tree
+```
+bash snmpwalk -v 2c -c private -m /usr/share/mibs/ietf/BGP4-MIB 172.20.20.2 1.3.6.1.2.1.15
+```
+```
+A:leaf-3-1.1.0.3# bash snmpwalk -v 2c -c private -m /usr/share/mibs/ietf/BGP4-MIB 172.20.20.11 1.3.6.1.2.1.15                                                                   
+BGP4-MIB::bgp = No Such Object available on this agent at this OID
+--{ + candidate shared default }--[ system snmp network-instance mgmt ]-- 
+```
+
+
 
 ## Notes
 It would be possible to implement this functionality purely in Perl; a project like https://metacpan.org/pod/Google::ProtocolBuffers::Dynamic might help
