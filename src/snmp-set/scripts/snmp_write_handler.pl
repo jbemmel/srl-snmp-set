@@ -4,6 +4,7 @@ use NetSNMP::agent (':all');
 
 #
 # Handler routine to deal with SNMP requests
+# See https://net-snmp.sourceforge.io/wiki/index.php/Tut:Extending_snmpd_using_perl
 #
 sub myhandler {
     my  ($handler, $registration_info, $request_info, $requests) = @_;
