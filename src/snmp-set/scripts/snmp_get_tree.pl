@@ -25,7 +25,7 @@ use strict;
 use constant OID_BGP_ROOT => '.1.3.6.1.2.1.15';
 # use constant OID_HAPROXY_STATS => OID_HAPROXY . '.1';
 
-my $oid_bgp = new NetSNMP::OID(OID_BGP_ROOT);
+my $oid_bgp = new NetSNMP::OID($OID_BGP_ROOT);
 
 sub get_bgp_mib {
 	my($handler, $registration_info, $request_info, $requests) = @_;
