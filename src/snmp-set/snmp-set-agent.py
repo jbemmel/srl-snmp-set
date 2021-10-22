@@ -84,8 +84,10 @@ def EnableSNMPSetInterface( network_instance ):
        '# Custom config by snmp-set-agent to enable interface up/down\n' +
        'access custom_grp "" any noauth exact sys2view rwview none\n' +
        'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
-       'perl do "/opt/srlinux/agents/snmp-set/scripts/snmp_write_handler.pl";\n',
-       conf )
+       'perl do "/opt/demo-agents/snmp-set/scripts/snmp_write_handler.pl";\n'
+       'view rwview included internet.mgmt.mib.bgp\n' +
+       'perl do "/opt/demo-agents/snmp-set/scripts/snmp_get_tree.pl";\n'
+       , conf )
       logging.info( f"New conf: \n{new_conf}" )
 
       with open( conf_file, "w+" ) as f:

@@ -28,7 +28,7 @@ sub myhandler {
 {
     #
     # Associate the handler with a particular OID tree, in this case interface adminStatus
-    #
+    # iso(1) org(3) dod(6) internet(1) mgmt(2) mib(1) interfaces(2) ifTable(2) ifEntry(1) ifAdminStatus(7)
     my $rootOID = ".1.3.6.1.2.1.2.2.1.7";
     my $regoid = new NetSNMP::OID($rootOID);
     $agent->register("snmp_interface_mgmt", $regoid, \&myhandler);

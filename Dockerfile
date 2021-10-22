@@ -3,7 +3,7 @@ ARG SR_LINUX_RELEASE
 
 FROM $SR_BASEIMG:$SR_LINUX_RELEASE AS target
 
-RUN sudo curl -sL https://github.com/karimra/gnmic/releases/download/v0.19.0/gnmic_0.19.0_Linux_x86_64.rpm -o /tmp/gnmic.rpm && sudo yum localinstall -y /tmp/gnmic.rpm
+RUN sudo curl -sL https://github.com/karimra/gnmic/releases/download/v0.20.0/gnmic_0.20.0_Linux_x86_64.rpm -o /tmp/gnmic.rpm && sudo yum localinstall -y /tmp/gnmic.rpm
 
 RUN sudo yum install -y epel-release && \
     sudo yum install -y net-snmp-perl jq
