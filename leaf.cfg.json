@@ -1,17 +1,4 @@
 {
-  "srl_nokia-snmp:snmp": {
-    "community": "$aes$73MtC3Nkc1zg=$hxMfoH62G7g5IgBMzT46vg==",
-    "network-instance": [
-      {
-        "name": "mgmt",
-        "admin-state": "enable",
-        "snmp-set-agent:enable-set-interface": true,
-        "source-address": [
-          "172.20.20.2"
-        ]
-      }
-    ]
-  },
   "srl_nokia-acl:acl": {
     "cpm-filter": {
       "ipv4-filter": {
@@ -22,7 +9,6 @@
             "description": "Accept incoming ICMP unreachable messages",
             "action": {
               "accept": {
-
               }
             },
             "match": {
@@ -1136,6 +1122,19 @@
     }
   ],
   "srl_nokia-system:system": {
+    "srl_nokia-snmp:snmp": {
+      "community": "$aes$73MtC3Nkc1zg=$hxMfoH62G7g5IgBMzT46vg==",
+      "network-instance": [
+        {
+          "name": "mgmt",
+          "admin-state": "enable",
+          "snmp-set-agent:enable-set-interface": true,
+          "source-address": [
+            "172.20.20.2"
+          ]
+        }
+      ]
+    },
     "srl_nokia-aaa:aaa": {
       "authentication": {
         "authentication-method": [
