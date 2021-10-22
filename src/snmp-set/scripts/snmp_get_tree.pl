@@ -72,7 +72,47 @@ sub get_bgp_mib {
 	 print STDERR "\nget_bgp_mib done processing requests\n*****#####*****";
 }
 
+# Static handler for hardcoded bgpVersion and bgpLocalAS
+sub test_handler {
+  my ($handler, $registration_info, $request_info, $requests) = @_;
+  my $bgpVersion_string = "2";
+  my $bgpLocalAS_int = "65123";
+
+  print STDERR "test_handler called\n";
+
+  for(my $request = $requests; $request; $request = $request->next()) {
+    my $oid = $request->getOID();
+    if ($request_info->getMode() == MODE_GET) {
+      if ($oid == new NetSNMP::OID( OID_BGP_ROOT . '.1' )) {
+        $request->setValue(ASN_OCTET_STR, $bgpVersion_string);
+      }
+      elsif ($oid == new NetSNMP::OID( OID_BGP_ROOT . '.2' )) {
+        $request->setValue(ASN_INTEGER, $bgpLocalAS_int);
+      }
+			else {
+				print STDERR "test_handler GET no OID match: $oid\n";
+			}
+    } elsif ($request_info->getMode() == MODE_GETNEXT) {
+      if ($oid == new NetSNMP::OID(OID_BGP_ROOT . '.1')) {
+				print STDERR "test_handler GETNEXT oid=.1 ($oid) -> return .2\n";
+        $request->setOID(OID_BGP_ROOT . '.2');
+        $request->setValue(ASN_INTEGER, $bgpLocalAS_int);
+      }
+      elsif ($oid != new NetSNMP::OID(OID_BGP_ROOT . '.2')) {
+				print STDERR "test_handler GETNEXT oid=$oid -> return .1\n";
+        $request->setOID(OID_BGP_ROOT . '.1');
+        $request->setValue(ASN_OCTET_STR, $bgpVersion_string);
+      } else {
+				print STDERR "test_handler GETNEXT -> return nothing\n";
+			}
+    } else {
+			print STDERR "test_handler not GET or GETNEXT\n";
+		}
+  }
+}
+
 {
-  $agent->register('BGP_MIB', $oid_bgp, \&get_bgp_mib);
+  # $agent->register('BGP_MIB', $oid_bgp, \&get_bgp_mib);
+	$agent->register('BGP_MIB', $oid_bgp, \&test_handler);
   print STDERR "Registered GET handler for $oid_bgp\n";
 }
