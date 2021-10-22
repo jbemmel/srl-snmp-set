@@ -36,32 +36,40 @@ sub get_bgp_mib {
 	my %mib_hash = ();
 	my %mib_next = ();
 	my $prev;
-	foreach ($mib_entries) {
-	    my($suboid, $val) = /(\S+)=(.*)/;
+	my @lines = split /\n/, $mib_entries;
+  foreach my $line (@lines) {
+	    my($suboid, $val) = ($line =~ m/(\S+)=(.*)/);
 			print STDERR "\nget_bgp_mib read '$suboid' = '$val'";
       $mib_hash{$suboid} = $val;
 	    if (defined($prev)) {
         $mib_next{$prev} = $suboid;
 	    }
 	    $prev = $suboid;
-	    next;
 	}
+	print STDERR "\nget_bgp_mib done reading: $mib_hash";
 
 	for(my $request = $requests; $request; $request = $request->next()) {
 	   my $oid = $request->getOID();
      my $mode = $request_info->getMode();
+		 print STDERR "\nget_bgp_mib req $request $oid mode=$mode";
      if ($mode == MODE_GETNEXT) {
 	      if (defined($mib_next{$oid})) {
+					 print STDERR "\nget_bgp_mib GETNEXT => $mib_next{$oid}";
 	         $request->setOID($mib_next{$oid});
-	      }
-	      $mode = MODE_GET;
+					 $mode = MODE_GET;
+	      } else {
+					 print STDERR "\nget_bgp_mib GETNEXT no next defined for '$oid'";
+				}
 	   }
 	   if ($mode == MODE_GET) {
-	      next if !defined($mib_hash{$oid});
-	      $request->setValue(ASN_OCTET_STR, $mib_hash{$oid});
+	      next if !defined($mib_hash{$oid}); # Or reply '?' ?
+				my $val = $mib_hash{$oid}
+				print STDERR "\nget_bgp_mib $oid => returning '$val'";
+	      $request->setValue(ASN_OCTET_STR, $val);
 	   }
      next;
    }
+	 print STDERR "\nget_bgp_mib done processing requests";
 }
 
 {
