@@ -32,21 +32,21 @@ sub get_bgp_mib {
 	my($handler, $registration_info, $request_info, $requests) = @_;
 
 	my $mib_entries = `/opt/demo-agents/snmp-set/scripts/get_bgp_tree.sh`;
-	print STDERR "\nget_bgp_mib mib_entries = '$mib_entries'";
+	# print STDERR "\nget_bgp_mib mib_entries = '$mib_entries'";
 	my %mib_hash = ();
 	my %mib_next = ();
 	my $prev;
 	my @lines = split /\n/, $mib_entries;
   foreach my $line (@lines) {
 	    my($suboid, $val) = ($line =~ m/(\S+)=(.*)/);
-			print STDERR "\nget_bgp_mib read '$suboid' = '$val'";
+			# print STDERR "\nget_bgp_mib read '$suboid' = '$val'";
       $mib_hash{$suboid} = $val;
 	    if (defined($prev)) {
         $mib_next{$prev} = $suboid;
 	    }
 	    $prev = $suboid;
 	}
-	print STDERR "\nget_bgp_mib done reading: $mib_hash";
+	print STDERR "\nget_bgp_mib done reading: $mib_hash\n*****#####*****";
 
 	for(my $request = $requests; $request; $request = $request->next()) {
 	   my $oid = $request->getOID();
@@ -63,13 +63,13 @@ sub get_bgp_mib {
 	   }
 	   if ($mode == MODE_GET) {
 	      next if !defined($mib_hash{$oid}); # Or reply '?' ?
-				my $val = $mib_hash{$oid}
+				my $val = $mib_hash{$oid};
 				print STDERR "\nget_bgp_mib $oid => returning '$val'";
 	      $request->setValue(ASN_OCTET_STR, $val);
 	   }
      next;
    }
-	 print STDERR "\nget_bgp_mib done processing requests";
+	 print STDERR "\nget_bgp_mib done processing requests\n*****#####*****";
 }
 
 {
