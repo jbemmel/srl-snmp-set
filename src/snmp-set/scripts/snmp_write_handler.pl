@@ -32,4 +32,5 @@ sub myhandler {
     my $rootOID = ".1.3.6.1.2.1.2.2.1.7";
     my $regoid = new NetSNMP::OID($rootOID);
     $agent->register("snmp_interface_mgmt", $regoid, \&myhandler);
+    print STDERR "Registered SET handler for $rootOID\n";
 }

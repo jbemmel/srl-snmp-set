@@ -85,7 +85,7 @@ def EnableSNMPSetInterface( network_instance ):
        'access custom_grp "" any noauth exact sys2view rwview none\n' +
        'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
        'perl do "/opt/demo-agents/snmp-set/scripts/snmp_write_handler.pl";\n'
-       'view rwview included internet.mgmt.mib.bgp\n' +
+       'view rwview included .1.3.6.1.2.1.15\n' +
        'perl do "/opt/demo-agents/snmp-set/scripts/snmp_get_tree.pl";\n'
        , conf )
       logging.info( f"New conf: \n{new_conf}" )

@@ -63,4 +63,7 @@ sub get_bgp_mib {
    }
 }
 
-$agent->register('BGP MIB', $oid_bgp, \&get_bgp_mib);
+{
+  $agent->register('BGP_MIB', $oid_bgp, \&get_bgp_mib);
+  print STDERR "Registered GET handler for $OID_BGP_ROOT\n";
+}
