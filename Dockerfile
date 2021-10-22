@@ -8,6 +8,9 @@ RUN sudo curl -sL https://github.com/karimra/gnmic/releases/download/v0.20.0/gnm
 RUN sudo yum install -y epel-release && \
     sudo yum install -y net-snmp-perl jq
 
+# Turn on debugging for SNMP daemon
+RUN sudo sed -i.orig 's/snmp_server -M/snmp_server -DALL -M/g' /opt/srlinux/appmgr/sr_linux_mgr_config.yml
+
 RUN sudo mkdir --mode=0755 -p /opt/demo-agents/
 
 COPY ./src /opt/demo-agents/

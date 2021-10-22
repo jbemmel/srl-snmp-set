@@ -18,14 +18,15 @@
 # snmpwalk -v 2c -c private -m /usr/share/mibs/ietf/BGP4-MIB 172.20.20.2 1.3.6.1.2.1.15
 
 use NetSNMP::OID (':all');
+use NetSNMP::ASN qw(:all);
 use NetSNMP::agent (':all');
 
-use strict;
+# use strict;
 
 use constant OID_BGP_ROOT => '.1.3.6.1.2.1.15';
 # use constant OID_HAPROXY_STATS => OID_HAPROXY . '.1';
 
-my $oid_bgp = new NetSNMP::OID($OID_BGP_ROOT);
+my $oid_bgp = new NetSNMP::OID(OID_BGP_ROOT);
 
 sub get_bgp_mib {
 	my($handler, $registration_info, $request_info, $requests) = @_;
@@ -39,7 +40,7 @@ sub get_bgp_mib {
 	    my($suboid, $val) = /(\S+)=(.*)/;
 			print STDERR "\nget_bgp_mib read '$suboid' = '$val'";
       $mib_hash{$suboid} = $val;
-	    if defined($prev) {
+	    if (defined($prev)) {
         $mib_next{$prev} = $suboid;
 	    }
 	    $prev = $suboid;
@@ -50,7 +51,7 @@ sub get_bgp_mib {
 	   my $oid = $request->getOID();
      my $mode = $request_info->getMode();
      if ($mode == MODE_GETNEXT) {
-	      if defined($mib_next{$oid}) {
+	      if (defined($mib_next{$oid})) {
 	         $request->setOID($mib_next{$oid});
 	      }
 	      $mode = MODE_GET;
@@ -65,5 +66,5 @@ sub get_bgp_mib {
 
 {
   $agent->register('BGP_MIB', $oid_bgp, \&get_bgp_mib);
-  print STDERR "Registered GET handler for $OID_BGP_ROOT\n";
+  print STDERR "Registered GET handler for $oid_bgp\n";
 }

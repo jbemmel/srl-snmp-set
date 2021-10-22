@@ -8,7 +8,7 @@ topology:
       extras:
         srl-agents: [ snmp-set-agent.yml ]
       binds:
-      - src/snmp-set:/opt/demog-agents/snmp-set
+      - src/snmp-set:/opt/demo-agents/snmp-set
 
   nodes:
     leaf1:  { kind: srl, startup-config: leaf.cfg.json }
