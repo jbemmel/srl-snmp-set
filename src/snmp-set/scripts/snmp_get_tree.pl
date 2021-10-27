@@ -26,6 +26,15 @@ use NetSNMP::agent (':all');
 use constant OID_BGP_ROOT => '.1.3.6.1.2.1.15';
 # use constant OID_HAPROXY_STATS => OID_HAPROXY . '.1';
 
+# Map of known ASN types by name (string)
+# limited to those used in BGP MIB
+my %asn_types = ( Counter32 => ASN_COUNTER,
+                  INTEGER => ASN_INTEGER,
+									Integer32 => ASN_INTEGER,
+									IpAddress => ASN_IPADDRESS,
+									OctetString => ASN_OCTET_STR,
+									Sequence => ASN_SEQUENCE );
+
 my $oid_bgp = new NetSNMP::OID(OID_BGP_ROOT);
 
 sub get_bgp_mib {
@@ -34,12 +43,14 @@ sub get_bgp_mib {
 	my $mib_entries = `/opt/demo-agents/snmp-set/scripts/get_bgp_tree.sh`;
 	# print STDERR "\nget_bgp_mib mib_entries = '$mib_entries'";
 	my %mib_hash = ();
+	my %mib_types = ();
 	my %mib_next = ();
 	my $prev;
 	my @lines = split /\n/, $mib_entries;
   foreach my $line (@lines) {
-	    my($suboid, $val) = ($line =~ m/(\S+)=(.*)/);
-			# print STDERR "\nget_bgp_mib read '$suboid' = '$val'";
+	    my($suboid, $type, $val) = ($line =~ m/(\S+):(\S+)=(.*)/);
+			print STDERR "\nget_bgp_mib read '$suboid' = '$val' type = '$type'";
+			$mib_types{$suboid} = $asn_types{ $type };
       $mib_hash{$suboid} = $val;
 	    if (defined($prev)) {
         $mib_next{$prev} = $suboid;
@@ -55,7 +66,11 @@ sub get_bgp_mib {
      if ($mode == MODE_GETNEXT) {
 	      if (defined($mib_next{$oid})) {
 					 print STDERR "\nget_bgp_mib GETNEXT => $mib_next{$oid}";
-	         $request->setOID($mib_next{$oid});
+					 $oid = $mib_next{$oid};
+					 while ( $mib_types{$oid} == ASN_SEQUENCE ) {
+						 $oid = $mib_next{$oid};
+					 }
+	         $request->setOID($oid);
 					 $mode = MODE_GET;
 	      } else {
 					 print STDERR "\nget_bgp_mib GETNEXT no next defined for '$oid'";
@@ -63,9 +78,15 @@ sub get_bgp_mib {
 	   }
 	   if ($mode == MODE_GET) {
 	      next if !defined($mib_hash{$oid}); # Or reply '?' ?
+
+				while ( $mib_types{$oid} == ASN_SEQUENCE ) {
+					$oid = $mib_next{$oid};
+				}
+
+				my $type = $mib_types{$oid};
 				my $val = $mib_hash{$oid};
-				print STDERR "\nget_bgp_mib $oid => returning '$val'";
-	      $request->setValue(ASN_OCTET_STR, $val);
+				print STDERR "\nget_bgp_mib $oid => returning '$val' type=$type";
+	      $request->setValue($type, $val);
 	   }
      next;
    }
@@ -112,7 +133,7 @@ sub test_handler {
 }
 
 {
-  # $agent->register('BGP_MIB', $oid_bgp, \&get_bgp_mib);
-	$agent->register('BGP_MIB', $oid_bgp, \&test_handler);
+  $agent->register('BGP_MIB', $oid_bgp, \&get_bgp_mib);
+	# $agent->register('BGP_MIB', $oid_bgp, \&test_handler);
   print STDERR "Registered GET handler for $oid_bgp\n";
 }

@@ -83,21 +83,33 @@ def EnableSNMPSetInterface( network_instance ):
       new_conf = re.sub( r"access custom_grp .* none none",
        '# Custom config by snmp-set-agent to enable interface up/down\n' +
        'access custom_grp "" any noauth exact sys2view rwview none\n' +
-       'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
-       'perl do "/opt/demo-agents/snmp-set/scripts/snmp_write_handler.pl";\n' +
-       'view sys2view included .1.3.6.1.2.1.15\n' +
-       'perl do "/opt/demo-agents/snmp-set/scripts/snmp_get_tree.pl";\n' +
-       'view sys2view included .1.3.6.1.4.1.8072.9999.9999\n' +
-       'perl do "/opt/demo-agents/snmp-set/scripts/hello_snmp_world.pl";\n'
+       # 'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
+       # 'perl do "/opt/demo-agents/snmp-set/scripts/snmp_write_handler.pl";\n' +
+       'view sys2view included .1.3.6.1.2.1.15.0\n' +
+       # 'perl do "/opt/demo-agents/snmp-set/scripts/snmp_get_tree.pl";\n'
+       'pass_persist .1.3.6.1.2.1.15.0 /opt/demo-agents/snmp-set/bgp4_pp.py\n' +
+       'view sys2view included .1.3.6.1.3.53.9.0\n' +
+       'extend .1.3.6.1.3.53.9.0 /bin/echo hello\n'
+       # 'view sys2view included .1.3.6.1.4.1.8072.9999.9999\n' +
+       # 'perl do "/opt/demo-agents/snmp-set/scripts/hello_snmp_world.pl";\n'
        , conf )
       logging.info( f"New conf: \n{new_conf}" )
 
       with open( conf_file, "w+" ) as f:
         f.write( new_conf )
 
+      # Try different SNMP binary
+      # cur = './snmp_server -DALL -M -c {0} {1}'
+      # new = '/usr/sbin/snmpd -DALL -c {0} {1}'
+      # cmd = f"sudo /usr/bin/sed -i.orig 's|{cur}|{new}|g' /opt/srlinux/appmgr/sr_linux_mgr_config.yml"
+      # logging.info( cmd )
+      # os.system( cmd )
+
       # Restart SNMP daemon (the one using that conf file)
       logging.info( "Restarting SNMP daemon..." )
-      os.system(f"ps -AlF | grep {conf_file} | awk '/snmp_server/ {{ print $4 }}'|xargs kill -hup")
+      os.system(f"ps -AlF | grep {conf_file} | awk '/\/usr\/sbin\/snmpd/ {{ print $4 }}'|xargs kill -9")
+
+      # After restart, change search-command too? Now done in 1 step
     except Exception as ex:
       logging.error( ex )
 
