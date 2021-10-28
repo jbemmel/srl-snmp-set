@@ -1350,7 +1350,7 @@
           ],
           "neighbor": [
             {
-              "peer-address": "1.2.3.4",
+              "peer-address": "192.168.0.1",
               "peer-group": "test"
             }
           ]
