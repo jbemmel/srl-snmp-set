@@ -163,10 +163,36 @@ def getValue(peer=None, rowname=None, state=None, default=None,
     elif rowname == 'bgpPeerLastError':
         # the last error must be 4 character hex string with first two being error code
         # and second two being error subcode.  This may or may not exist.
-        val = traverse(peer, jsonList, default) or '00 00'
-        if len(val) != 4:
-            val = '00 00'
-        value = '%s %s' % (val[:2], val[2:])
+        if "last-notification-error-code" in peer:
+          ec = peer[ "last-notification-error-code" ]
+          error_codes = {
+            'Message Header Error': 1,
+            'OPEN Message Error':   2,
+            'UPDATE Message Error': 3,
+            'Hold Timer Expired':   4,
+            'Finite State Machine Error': 5,
+            'Cease': 6,
+          }
+          if ec in error_codes:
+             error_code = error_codes[ec]
+          else: # XXX strings may not be correct
+             syslog.warning( f"Unmapped error code: {ec}" )
+             error_code = 0
+        else:
+          error_code = 0
+        if "last-notification-error-subcode" in peer:
+          sc = peer[ "last-notification-error-subcode" ]
+          sub_codes = {
+            "Connection Collision Resolution": 1, # Not synchronized
+          }
+          if sc in sub_codes:
+             sub_code = sub_codes[sc]
+          else:
+             syslog.warning( f"Unmapped error subcode: {sc}" )
+             sub_code = 0 # Unmapped
+        else:
+          sub_code = 0
+        value = f'{error_code:1x}{sub_code:1x}' # Length 2 in RFC
 #    elif rowname in ['bgpPeerFsmEstablishedTime', 'bgpPeerHoldTime', 'bgpPeerKeepAlive',
 #                     'bgpPeerHoldTimeConfigured', 'bgpPeerKeepAliveConfigured',
 #                     'bgpPeerMinRouteAdvertisementInterval', 'bgpPeerInUpdateElapsedTime']:
