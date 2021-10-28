@@ -37,21 +37,21 @@ peerstate = {'idle':1,
 
 adminstate = { 'disable' : 1, 'enable' : 2 }
 
-bgpPeerEntryRows = ['bgpPeerIdentifier', 'bgpPeerState', 'bgpPeerAdminStatus',
-                    'bgpPeerNegotiatedVersion', 'bgpPeerLocalAddr', 'bgpPeerLocalPort',
-                    'bgpPeerRemoteAddr', 'bgpPeerRemotePort', 'bgpPeerRemoteAs',
-                    'bgpPeerInUpdates', 'bgpPeerOutUpdates', 'bgpPeerInTotalMessages',
-                    'bgpPeerOutTotalMessages',
-                    'bgpPeerLastError',
-                    'bgpPeerFsmEstablishedTransitions',
-                    'bgpPeerFsmEstablishedTime',
-                    'bgpPeerConnectRetryInterval', 'bgpPeerHoldTime', 'bgpPeerKeepAlive',
-                    'bgpPeerHoldTimeConfigured', 'bgpPeerKeepAliveConfigured',
-                    # 'bgpPeerMinASOriginationInterval',
-                    'bgpPeerMinRouteAdvertisementInterval',
-                    # 'bgpPeerInUpdateElapsedTime'
-                  ]
-bgpPeerEntryList = list(enumerate(bgpPeerEntryRows, start=1))
+#bgpPeerEntryRows = ['bgpPeerIdentifier', 'bgpPeerState', 'bgpPeerAdminStatus',
+#                    'bgpPeerNegotiatedVersion', 'bgpPeerLocalAddr', 'bgpPeerLocalPort',
+#                    'bgpPeerRemoteAddr', 'bgpPeerRemotePort', 'bgpPeerRemoteAs',
+#                    'bgpPeerInUpdates', 'bgpPeerOutUpdates', 'bgpPeerInTotalMessages',
+#                    'bgpPeerOutTotalMessages',
+#                    # 'bgpPeerLastError',
+#                    'bgpPeerFsmEstablishedTransitions',
+#                    # 'bgpPeerFsmEstablishedTime',
+#                    'bgpPeerConnectRetryInterval', 'bgpPeerHoldTime', 'bgpPeerKeepAlive',
+#                    'bgpPeerHoldTimeConfigured', 'bgpPeerKeepAliveConfigured',
+#                    # 'bgpPeerMinASOriginationInterval',
+#                    'bgpPeerMinRouteAdvertisementInterval',
+#                    # 'bgpPeerInUpdateElapsedTime'
+#                  ]
+# bgpPeerEntryList = list(enumerate(bgpPeerEntryRows, start=1))
 
 # construct the peer entry table dictionary
 bgpPeerEntry = {'bgpPeerIdentifier' : {'oid' : 1, 'type' : pp.add_ip,
@@ -93,7 +93,7 @@ bgpPeerEntry = {'bgpPeerIdentifier' : {'oid' : 1, 'type' : pp.add_ip,
                                   'jsonName' : [],
                                   'default' : '00 00'},
             'bgpPeerFsmEstablishedTransitions' : {'oid' : 15,
-                                               'type' : pp.add_cnt_32bit,
+                                                  'type' : pp.add_cnt_32bit,
                                'jsonName' : ['established-transitions'],
                                                'default' : 0},
             # 'bgpPeerFsmEstablishedTime' : {'oid' : 16, 'type' : pp.add_gau,
@@ -266,16 +266,16 @@ def update():
     # peers should be sorted by ip address because snmp expects it.
     ipv4PeerList = sorted(ipv4PeerList,
                           key=lambda p: struct.unpack("!L", socket.inet_aton(p['peer-address']))[0])
-    for rowval, rowname in bgpPeerEntryList:
+    for rowname, e in bgpPeerEntry.items():
         # show all peers for each row
         for peer in ipv4PeerList:
-            newOid = "%s.%s.%s" % (bgpPeerEntryTable, rowval, peer['peer-address'])
-            jsonList =  bgpPeerEntry[rowname]['jsonName']
-            default =  bgpPeerEntry[rowname]['default']
+            newOid = "%s.%s.%s" % (bgpPeerEntryTable, e['oid'], peer['peer-address'])
+            jsonList =  e['jsonName']
+            default =  e['default']
             state = peer['session-state']
             myval = getValue(peer=peer, rowname=rowname, state=state, default=default,
                              jsonList=jsonList)
-            func = bgpPeerEntry[rowname]['type']
+            func = e['type']
             func(newOid, myval)
 
     # local system identifier IP address
