@@ -1,4 +1,6 @@
 #! /usr/bin/python3 -u
+# -*- coding:Utf-8 -*-
+# Option -u is needed for communication with snmpd
 #
 # Modifications to support SRL Copyright (C) 2021 Nokia, all rights reserved
 #
@@ -23,10 +25,8 @@ import syslog
 import ipaddress, struct, socket, datetime
 import snmp_passpersist as snmp
 
-BGP4_MIB = '.1.3.6.1.2.1.15'
+BGP4_MIB = '.1.3.6.1.2.1' # .15
 pp = snmp.PassPersist(BGP4_MIB)
-
-BGP4_MIB = '.1.3.6.1.2.1.15'
 
 peerstate = {'idle':1,
              'connect':2,
@@ -156,10 +156,10 @@ def getValue(peer=None, rowname=None, state=None, default=None,
             value = default
     elif rowname == 'bgpPeerNegotiatedVersion':
         # only show the negotiated version if we are established or openconfirm
-        if state == 'established' or state == 'openconfirm':
-            value = traverse(peer, jsonList, default)
-        else:
-            value = default
+        # if state == 'established' or state == 'openconfirm':
+        #    value = traverse(peer, jsonList, default)
+        # else:
+        value = default
     elif rowname == 'bgpPeerLastError':
         # the last error must be 4 character hex string with first two being error code
         # and second two being error subcode.  This may or may not exist.
@@ -202,11 +202,12 @@ def update():
     """
     Simply grab the output of vtysh commands and stick them in our hashed array
     """
+
     # version is a vector of supported protocol versions with MSB of first octet
     # as bit 0 and version is i+1 if bit i is set.  We hardcode this to version 4.
     bgpVersion = '10'
     # return a hex string
-    pp.add_oct("1", bgpVersion)
+    pp.add_oct( "15.1", bgpVersion)
     # grab an array of neighbor entries
     # we have created showpeers and showpaths to simplify sudoers.d/snmp
     # ipBgpNeig = get_json_output(commandList=['sudo', '/usr/share/snmp/showpeers'])
@@ -226,9 +227,10 @@ def update():
         bgpLocalAs = bgp['autonomous-system']
     except:
         bgpLocalAs = 0
-    pp.add_int("2.0", bgpLocalAs)
+    pp.add_int( "15.2.0", bgpLocalAs)
     ##################### bgpPeerEntryTable ####################################
-    bgpPeerEntryTable = "3.1"
+    bgpPeerEntryTable = "15.3.1"
+
     # peers should be sorted by ip address because snmp expects it.
     ipv4PeerList = sorted(ipv4PeerList,
                           key=lambda p: struct.unpack("!L", socket.inet_aton(p['peer-address']))[0])
@@ -246,16 +248,16 @@ def update():
 
     # local system identifier IP address
     bgpIdentifier = bgp['router-id']
-    pp.add_ip('4', bgpIdentifier )
+    pp.add_ip('15.4', bgpIdentifier )
     return
 
 ################################################################################
 # in debug/shadow/other.log.shadow
 syslog.syslog("starting...")
 
-pp.debug = True
+pp.debug = len( sys.argv ) > 1
 
 if pp.debug:
     update()
 else:
-    pp.start(update, 60)
+    pp.start(update, 60) # every 60s
