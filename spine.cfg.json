@@ -1076,7 +1076,19 @@
   "srl_nokia-interfaces:interface": [
     {
       "name": "ethernet-1/1",
-      "admin-state": "enable"
+      "admin-state": "enable",
+      "subinterface": [
+        {
+          "index": 0,
+          "ipv4": {
+            "address": [
+              {
+                "ip-prefix": "192.168.0.0/31"
+              }
+            ]
+          }
+        }
+      ]
     },
     {
       "name": "ethernet-1/2",
@@ -1337,7 +1349,11 @@
     {
       "name": "default",
       "admin-state": "enable",
-
+      "interface": [
+        {
+          "name": "ethernet-1/1.0"
+        }
+      ],
       "protocols": {
         "srl_nokia-bgp:bgp": {
           "autonomous-system": 12345,

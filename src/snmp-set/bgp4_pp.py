@@ -233,7 +233,7 @@ def update():
         bgpLocalAs = bgp['autonomous-system']
     except:
         bgpLocalAs = 0
-    pp.add_int( "2.0", bgpLocalAs)
+    pp.add_int( "2", bgpLocalAs)
     ##################### bgpPeerEntryTable ####################################
     bgpPeerEntryTable = "3.1"
 
