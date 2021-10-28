@@ -37,22 +37,6 @@ peerstate = {'idle':1,
 
 adminstate = { 'disable' : 1, 'enable' : 2 }
 
-#bgpPeerEntryRows = ['bgpPeerIdentifier', 'bgpPeerState', 'bgpPeerAdminStatus',
-#                    'bgpPeerNegotiatedVersion', 'bgpPeerLocalAddr', 'bgpPeerLocalPort',
-#                    'bgpPeerRemoteAddr', 'bgpPeerRemotePort', 'bgpPeerRemoteAs',
-#                    'bgpPeerInUpdates', 'bgpPeerOutUpdates', 'bgpPeerInTotalMessages',
-#                    'bgpPeerOutTotalMessages',
-#                    # 'bgpPeerLastError',
-#                    'bgpPeerFsmEstablishedTransitions',
-#                    # 'bgpPeerFsmEstablishedTime',
-#                    'bgpPeerConnectRetryInterval', 'bgpPeerHoldTime', 'bgpPeerKeepAlive',
-#                    'bgpPeerHoldTimeConfigured', 'bgpPeerKeepAliveConfigured',
-#                    # 'bgpPeerMinASOriginationInterval',
-#                    'bgpPeerMinRouteAdvertisementInterval',
-#                    # 'bgpPeerInUpdateElapsedTime'
-#                  ]
-# bgpPeerEntryList = list(enumerate(bgpPeerEntryRows, start=1))
-
 # construct the peer entry table dictionary
 bgpPeerEntry = {'bgpPeerIdentifier' : {'oid' : 1, 'type' : pp.add_ip,
                                        'jsonName' : [], 'default' : '0.0.0.0'},
@@ -193,12 +177,6 @@ def getValue(peer=None, rowname=None, state=None, default=None,
         else:
           sub_code = 0
         value = f'{error_code:1x}{sub_code:1x}' # Length 2 in RFC
-#    elif rowname in ['bgpPeerFsmEstablishedTime', 'bgpPeerHoldTime', 'bgpPeerKeepAlive',
-#                     'bgpPeerHoldTimeConfigured', 'bgpPeerKeepAliveConfigured',
-#                     'bgpPeerMinRouteAdvertisementInterval', 'bgpPeerInUpdateElapsedTime']:
-#        # time was given to us in ms, convert to seconds
-#        value = int(traverse(peer, jsonList, default) or 0)/1000
-
     elif rowname == 'bgpPeerRemoteAs': # for iBGP peer-as is not set
         if 'peer-as' in peer:
             value = peer['peer-as']
@@ -218,7 +196,7 @@ def getValue(peer=None, rowname=None, state=None, default=None,
     return e['map'].get( value, 0 ) if 'map' in e else value
 
 def call_gnmic(path):
-    # gnmic -a localhost -u admin -p admin --skip-verify -e json_ietf get --path /network-instance[name=default]/protocols/bgp/neighbor
+    # gnmic -a localhost -u admin -p admin --skip-verify -e json_ietf get --path /network-instance[name=default]/protocols/bgp
     gnmic_cmd = [ '/usr/local/bin/gnmic', '-a', 'localhost', '-u', 'admin',
                   '-p', 'admin', '--skip-verify', '-e', 'json_ietf',
                   'get', '--path', path ]
@@ -232,7 +210,7 @@ def call_gnmic(path):
 
 def update():
     """
-    Simply grab the output of vtysh commands and stick them in our hashed array
+    Simply grab the output of a gnmic commands and process
     """
 
     # version is a vector of supported protocol versions with MSB of first octet
@@ -240,10 +218,6 @@ def update():
     bgpVersion = '10'
     # return a hex string
     pp.add_oct( "1", bgpVersion)
-    # grab an array of neighbor entries
-    # we have created showpeers and showpaths to simplify sudoers.d/snmp
-    # ipBgpNeig = get_json_output(commandList=['sudo', '/usr/share/snmp/showpeers'])
-    # ipBgpSummary = get_json_output(commandList=['sudo', '/usr/share/snmp/showsummary'])
     srlBgp = call_gnmic( '/network-instance[name=default]/protocols/bgp' )
     bgp = srlBgp[0]['updates'][0]['values']['srl_nokia-network-instance:network-instance/protocols/srl_nokia-bgp:bgp']
     peerList = bgp['neighbor']
