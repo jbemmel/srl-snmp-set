@@ -25,7 +25,7 @@ import syslog
 import ipaddress, struct, socket, datetime
 import snmp_passpersist as snmp
 
-BGP4_MIB = '.1.3.6.1.2.1' # .15
+BGP4_MIB = '.1.3.6.1.2.1.15'
 pp = snmp.PassPersist(BGP4_MIB)
 
 peerstate = {'idle':1,
@@ -172,6 +172,12 @@ def getValue(peer=None, rowname=None, state=None, default=None,
 #                     'bgpPeerMinRouteAdvertisementInterval', 'bgpPeerInUpdateElapsedTime']:
 #        # time was given to us in ms, convert to seconds
 #        value = int(traverse(peer, jsonList, default) or 0)/1000
+
+    elif rowname == 'bgpPeerRemoteAs': # for iBGP peer-as is not set
+        if 'peer-as' in peer:
+            value = peer['peer-as']
+        else:
+            value = peer['local-as'][0]['as-number']
     elif rowname == 'bgpPeerFsmEstablishedTime':
         # Calculate diff with "last-established" string
         last_established = datetime.datetime.strptime(peer['last-established'],"%Y-%m-%dT%H:%M:%S.%fZ")
@@ -207,7 +213,7 @@ def update():
     # as bit 0 and version is i+1 if bit i is set.  We hardcode this to version 4.
     bgpVersion = '10'
     # return a hex string
-    pp.add_oct( "15.1", bgpVersion)
+    pp.add_oct( "1", bgpVersion)
     # grab an array of neighbor entries
     # we have created showpeers and showpaths to simplify sudoers.d/snmp
     # ipBgpNeig = get_json_output(commandList=['sudo', '/usr/share/snmp/showpeers'])
@@ -227,9 +233,9 @@ def update():
         bgpLocalAs = bgp['autonomous-system']
     except:
         bgpLocalAs = 0
-    pp.add_int( "15.2.0", bgpLocalAs)
+    pp.add_int( "2.0", bgpLocalAs)
     ##################### bgpPeerEntryTable ####################################
-    bgpPeerEntryTable = "15.3.1"
+    bgpPeerEntryTable = "3.1"
 
     # peers should be sorted by ip address because snmp expects it.
     ipv4PeerList = sorted(ipv4PeerList,
@@ -248,7 +254,7 @@ def update():
 
     # local system identifier IP address
     bgpIdentifier = bgp['router-id']
-    pp.add_ip('15.4', bgpIdentifier )
+    pp.add_ip('4', bgpIdentifier )
     return
 
 ################################################################################

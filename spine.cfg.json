@@ -1344,7 +1344,8 @@
           "router-id": "1.2.3.4",
           "group": [
             {
-              "group-name": "test"
+              "group-name": "test",
+              "peer-as": 54321
             }
           ],
           "neighbor": [
