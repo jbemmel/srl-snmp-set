@@ -74,17 +74,15 @@ Let's say you want to add support for a specific MIB. For example: the BGP tree
 bash snmpwalk -v 2c -c private -m /usr/share/mibs/ietf/BGP4-MIB 172.20.20.2 1.3.6.1.2.1.15
 ```
 ```
-A:leaf-3-1.1.0.3# bash snmpwalk -v 2c -c private -m /usr/share/mibs/ietf/BGP4-MIB 172.20.20.11 1.3.6.1.2.1.15                                                                   
+A:leaf-3-1.1.0.3# bash snmpwalk -v 2c -c private -m /usr/share/mibs/ietf/BGP4-MIB 172.20.20.2 1.3.6.1.2.1.15                                                                   
 BGP4-MIB::bgp = No Such Object available on this agent at this OID
 --{ + candidate shared default }--[ system snmp network-instance mgmt ]-- 
 ```
 
-The desired output is something like this:
-```
-bash "gnmic -a 172.20.20.11 -u admin -p admin --skip-verify -e json_ietf get --path /network-instance[name=default]/protocols/bgp/neighbor[peer-address=*]/session-state"
-```
+The [SNMP pass_persist extension](https://github.com/nagius/snmp_passpersist) is a module to execute an arbitrary program associated with a particular subtree.
+It defines a simple interactive protocol to exchange data via stdin/stdout pipes, and this [can be used](https://github.com/jbemmel/srl-snmp-set/blob/main/src/snmp-set/bgp4_pp.py) to implement the BGP4 MIB (for example).
 
-
+By default, SR Linux uses a custom binary at /opt/srlinux/bin/snmp_server to respond to SNMP queries; it does not support pass_persist. However, it can be [replaced](https://github.com/jbemmel/srl-snmp-set/blob/main/Dockerfile#L15) by /usr/sbin/snmpd (the standard net-snmpd daemon)
 
 ## Notes
 It would be possible to implement this functionality purely in Perl; a project like https://metacpan.org/pod/Google::ProtocolBuffers::Dynamic might help
