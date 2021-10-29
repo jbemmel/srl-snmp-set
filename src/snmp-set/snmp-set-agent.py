@@ -83,11 +83,11 @@ def EnableSNMPSetInterface( network_instance ):
       new_conf = re.sub( r"access custom_grp .* none none",
        '# Custom config by snmp-set-agent to enable interface up/down\n' +
        'access custom_grp "" any noauth exact sys2view rwview none\n' +
-       'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
-       'perl do "/opt/demo-agents/snmp-set/scripts/snmp_write_handler.pl";\n' +
        'view sys2view included .1.3.6.1.2.1.15\n' +
        # 'perl do "/opt/demo-agents/snmp-set/scripts/snmp_get_tree.pl";\n'
-       'pass_persist .1.3.6.1.2.1.15 /opt/demo-agents/snmp-set/bgp4_pp.py\n'
+       'pass_persist .1.3.6.1.2.1.15 /opt/demo-agents/snmp-set/bgp4_pp.py\n' +
+       'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
+       'perl do "/opt/demo-agents/snmp-set/scripts/snmp_write_handler.pl";\n'
        # 'view sys2view included .1.3.6.1.3.53.9.0\n' +
        # 'extend .1.3.6.1.3.53.9.0 /bin/echo hello\n'
        # 'view sys2view included .1.3.6.1.4.1.8072.9999.9999\n' +
