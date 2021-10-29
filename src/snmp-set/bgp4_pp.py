@@ -212,7 +212,7 @@ def update():
     """
     Simply grab the output of a gnmic commands and process
     """
-    syslog.info( "SNMP BGP4 update() called...every 60s?" )
+    syslog.syslog( "SNMP BGP4 update() called...every 60s?" )
 
     # version is a vector of supported protocol versions with MSB of first octet
     # as bit 0 and version is i+1 if bit i is set.  We hardcode this to version 4.
