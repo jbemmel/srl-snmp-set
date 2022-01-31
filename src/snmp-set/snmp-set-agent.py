@@ -10,6 +10,7 @@ import re
 import time
 import json
 import signal
+import subprocess
 
 import sdk_service_pb2
 import sdk_service_pb2_grpc
@@ -105,9 +106,13 @@ def EnableSNMPSetInterface( network_instance ):
       # logging.info( cmd )
       # os.system( cmd )
 
-      # Restart SNMP daemon (the one using that conf file)
-      logging.info( "Restarting SNMP daemon..." )
-      os.system(f"ps -AlF | grep {conf_file} | awk '/\/usr\/sbin\/snmpd/ {{ print $4 }}'|xargs kill -9")
+      # Check if snmpd is already running, if so restart it
+      with os.popen('/usr/bin/ps -AlF') as ps:
+        if conf_file in ps.read():
+          logging.info( f"Restarting SNMP daemon...using {conf_file}" )
+          os.system(f"/usr/bin/ps -AlF | grep {conf_file} | awk '/\/usr\/sbin\/snmpd/ {{ print $4 }}'|xargs kill -9")
+        else:
+          logging.info( f"SNMP daemon not yet running...assuming it will use {conf_file}" )
 
       # After restart, change search-command too? Now done in 1 step
     except Exception as ex:

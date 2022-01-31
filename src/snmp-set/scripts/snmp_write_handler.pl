@@ -20,7 +20,11 @@ sub myhandler {
           # 1 = enable, 2 = disable (int)
           my $val = ($request->getValue() == 1) ? "enable" : "disable";
           print STDERR "\nCalling gnmic-set-ifstatus.sh SET $oid $ifindex = $val";
-          system("/opt/demo-agents/snmp-set/scripts/gnmic-set-ifstatus.sh $ifindex $val")
+          my $res = system("/opt/demo-agents/snmp-set/scripts/gnmic-set-ifstatus.sh $ifindex $val");
+          if ($res != 0) {
+            $request->setError($request_info, SNMP_ERR_NOSUCHNAME);
+            next
+          }
         }
     }
 }
