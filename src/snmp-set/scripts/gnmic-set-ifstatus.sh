@@ -9,7 +9,7 @@ ADMINSTATUS="$2"
 
 # Note: Using a local Unix socket, with authentication but no TLS
 # Requires /system/gnmi-server/unix-socket/admin-state to be 'enable'
-GNMIC="/usr/local/bin/gnmic -a unix:///opt/srlinux/var/run/sr_gnmi_server --insecure -u admin -p admin -e json_ietf"
+GNMIC="/usr/local/bin/gnmic -a unix:///opt/srlinux/var/run/sr_gnmi_server --insecure -u admin -p NokiaSrl1! -e json_ietf"
 
 IFNAME=`$GNMIC get --path /interface/ifindex | \
         jq -r --arg i "$IFINDEX" '.[].updates[].values[""]["srl_nokia-interfaces:interface"][] | select (.ifindex == ($i|tonumber))|.name'`

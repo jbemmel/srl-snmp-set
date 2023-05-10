@@ -1,20 +1,23 @@
 # See example_config.yml for an explanation of all the accepted fields
 snmp_set_agent:
-   path: /opt/demo-agents/snmp-set/
-   launch-command: sudo /opt/demo-agents/snmp-set/scripts/snmp-set-agent.sh
-   search-command: python3 /opt/demo-agents/snmp-set/snmp-set-agent.py
-   wait-for-config: Yes
-   failure-threshold: 100
-   failure-action: wait=forever
-   author: 'Demo agent'
-   version-command: ' cat /opt/demo-agents/snmp-set/agent_version'
-   yang-modules:
-       names:
-           - "snmp-set-agent"
-       source-directories:
-           - "/opt/demo-agents/snmp-set/models/"
-           - "/opt/srlinux/models/srl_nokia/models/common/"
-           - "/opt/srlinux/models/srl_nokia/models/system/"
-           - "/opt/srlinux/models/srl_nokia/models/routing-policy/"
-           - "/opt/srlinux/models/srl_nokia/models/network-instance/"
-           - "/opt/srlinux/models/srl_nokia/models/interfaces/"
+ path: /opt/demo-agents/snmp-set/
+ launch-command: sudo /opt/demo-agents/snmp-set/scripts/snmp-set-agent.sh
+ search-command: python3 /opt/demo-agents/snmp-set/snmp-set-agent.py
+ wait-for-config: Yes
+ failure-threshold: 100
+ failure-action: wait=forever
+ author: 'Demo agent'
+ version-command: ' cat /opt/demo-agents/snmp-set/agent_version'
+ yang-modules:
+  names:
+  - "snmp-set-agent"
+  source-directories:
+  - "/opt/demo-agents/snmp-set/models/"
+  # Need to include system models here, not loaded by default
+  - "/opt/srlinux/models/srl_nokia/models"
+
+  # - "/opt/srlinux/models/srl_nokia/models/common/"
+  # - "/opt/srlinux/models/srl_nokia/models/system/"
+  # - "/opt/srlinux/models/srl_nokia/models/routing-policy/"
+  # - "/opt/srlinux/models/srl_nokia/models/network-instance/"
+  # - "/opt/srlinux/models/srl_nokia/models/interfaces/"

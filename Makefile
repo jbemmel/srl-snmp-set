@@ -19,7 +19,7 @@ do-build:
 										--build-arg SR_BASEIMG="${BASEIMG}" \
 	                  --build-arg SR_LINUX_RELEASE="${SR_LINUX_RELEASE}" \
 	                  -f ./Dockerfile -t ${NAME}:${TAG} .
-	sudo docker tag ${NAME}:${TAG} ${NAME}:latest
+	sudo docker tag ${NAME}:${TAG} ${NAME}:${SR_LINUX_RELEASE}
 
 #
 # This builds a combined SNMP set/EVPN proxy image
