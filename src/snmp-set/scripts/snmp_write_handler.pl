@@ -22,7 +22,7 @@ sub myhandler {
           print STDERR "\nCalling gnmic-set-ifstatus.sh SET $oid $ifindex = $val";
           my $res = system("/opt/demo-agents/snmp-set/scripts/gnmic-set-ifstatus.sh $ifindex $val");
           if ($res != 0) {
-            $request->setError($request_info, SNMP_ERR_NOSUCHNAME);
+            $request->setError($request_info, SNMP_ERR_GENERR);
             next
           }
         }
