@@ -109,7 +109,7 @@ def EnableSNMPSetInterface( network_instance ):
       with os.popen('/usr/bin/ps -AlF') as ps:
         if conf_file in ps.read():
           logging.info( f"Restarting SNMP daemon...using {conf_file}" )
-          os.system(f"/usr/bin/ps -AlF | grep {conf_file} | awk '/\/usr\/sbin\/snmpd/ {{ print $4 }}'|xargs kill -9")
+          os.system(f"/usr/bin/ps -AlF | grep {conf_file} | grep -v grep | awk '{{print $4}}' | xargs kill -9")
         else:
           logging.info( f"SNMP daemon not yet running...assuming it will use {conf_file}" )
 

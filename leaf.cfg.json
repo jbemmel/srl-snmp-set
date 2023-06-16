@@ -1086,7 +1086,8 @@
               {
                 "ip-prefix": "192.168.0.1/31"
               }
-            ]
+            ],
+            "admin-state": "enable"
           }
         }
       ]
@@ -1358,6 +1359,12 @@
       ],
       "protocols": {
         "srl_nokia-bgp:bgp": {
+          "afi-safi": [
+            {
+              "afi-safi-name": "ipv4-unicast",
+              "admin-state": "enable"
+            }
+          ],    
           "autonomous-system": 54321,
           "router-id": "4.3.2.1",
           "group": [
