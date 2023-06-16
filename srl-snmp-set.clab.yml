@@ -3,7 +3,7 @@ name: snmp-set-lab
 topology:
   kinds:
     srl:
-      type: ixrd2 # See https://www.nokia.com/networks/products/7250-interconnect-router/
+      type: ixrd2l # See https://www.nokia.com/networks/products/7250-interconnect-router/
       image: srl/snmp-set:latest
       # image: srl/snmp-set:22.11.2
       extras:
@@ -13,9 +13,19 @@ topology:
 
 
   nodes:
-    # spine1: { kind: srl, mgmt-ipv4: 172.20.20.2, startup-config: spine.cfg.json }
-    spine1: { kind: srl, mgmt-ipv4: 172.20.20.2, startup-config: spine-snmp-delta.config }
-    leaf1:  { kind: srl, mgmt-ipv4: 172.20.20.3, startup-config: leaf.cfg.json }
-
-  links:
-  - endpoints: ["leaf1:e1-1", "spine1:e1-1"]
+    srl:
+      kind: srl
+      mgmt-ipv4: 172.20.20.2
+      startup-config: |
+       # Create an interface to practice on...
+       /interface lo0 admin-state enable
+       
+       # Enable the gNMI Unix socket
+       /system gnmi-server unix-socket admin-state enable use-authentication false
+       
+       /system snmp
+       community private
+       network-instance mgmt
+        admin-state enable
+        source-address [172.20.20.2]
+        enable-set-interface true  !!! Agent enabled    
