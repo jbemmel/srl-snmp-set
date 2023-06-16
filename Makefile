@@ -8,7 +8,8 @@ override SR_LINUX_RELEASE="latest"
 endif
 
 .PHONY: build do-build
-build: BASEIMG=srl/custombase
+build: BASEIMG=ghcr.io/nokia/srlinux
+# build: BASEIMG=srl/custombase
 build: NAME=srl/snmp-set
 build: do-build ## Builds the agent
 
