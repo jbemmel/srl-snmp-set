@@ -26,6 +26,7 @@ jobs:
 
     - name: Lint with Ruff, ignore line length and imports not at top
       run: |
+        pip install ruff
         ruff check src --ignore E501,E402
 
     # - name: Run tests
