@@ -13,9 +13,9 @@ topology:
 
 
   nodes:
-    # spine1: { kind: srl, mgmt_ipv4: 172.20.20.2, startup-config: spine.cfg.json }
-    spine1: { kind: srl, mgmt_ipv4: 172.20.20.2, startup-config: spine-snmp-delta.config }
-    leaf1:  { kind: srl, mgmt_ipv4: 172.20.20.3, startup-config: leaf.cfg.json }
+    # spine1: { kind: srl, mgmt-ipv4: 172.20.20.2, startup-config: spine.cfg.json }
+    spine1: { kind: srl, mgmt-ipv4: 172.20.20.2, startup-config: spine-snmp-delta.config }
+    leaf1:  { kind: srl, mgmt-ipv4: 172.20.20.3, startup-config: leaf.cfg.json }
 
   links:
   - endpoints: ["leaf1:e1-1", "spine1:e1-1"]

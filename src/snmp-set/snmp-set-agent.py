@@ -10,7 +10,6 @@ import re
 import time
 import json
 import signal
-import subprocess
 
 import sdk_service_pb2
 import sdk_service_pb2_grpc
@@ -130,7 +129,7 @@ def Handle_Notification(obj):
             logging.info(f"Got config for agent, now will handle it :: \n{obj.config}\
                             Operation :: {obj.config.op}\nData :: {obj.config.data.json}")
             if obj.config.op == 2:
-                logging.info(f"Delete snmp-agent cli scenario")
+                logging.info("Delete snmp-agent cli scenario")
                 # if file_name != None:
                 #    Update_Result(file_name, action='delete')
                 response=stub.AgentUnRegister(request=sdk_service_pb2.AgentRegistrationRequest(), metadata=metadata)
@@ -192,8 +191,8 @@ def Run():
                         net_instances[ net_instance ] = True
 
     except Exception as e:
-        traceback_str = ''.join(traceback.format_tb(e.__traceback__))
-        logging.error(f'Exception caught :: {e} stack:{traceback_str}')
+        # traceback_str = ''.join(traceback.format_tb(e.__traceback__))
+        logging.error(f'Exception caught :: {e}')
     finally:
         Exit_Gracefully(0,0)
 

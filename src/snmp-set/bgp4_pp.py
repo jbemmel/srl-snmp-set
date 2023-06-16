@@ -22,7 +22,10 @@ import subprocess
 import sys
 import json
 import syslog
-import ipaddress, struct, socket, datetime
+import ipaddress
+import struct
+import socket
+import datetime
 import snmp_passpersist as snmp
 
 BGP4_MIB = '.1.3.6.1.2.1.15'
@@ -232,7 +235,7 @@ def update():
             continue
     try:
         bgpLocalAs = bgp['autonomous-system']
-    except:
+    except Exception:
         bgpLocalAs = 0
     pp.add_int( "2", bgpLocalAs)
     ##################### bgpPeerEntryTable ####################################
