@@ -53,7 +53,7 @@ jobs:
     - name: Install dependencies
       run: |
         # python -m pip install --upgrade pip
-        apt install -y snmp
+        sudo apt install -y snmp
 
     # - name: pull srlinux image
     #   run: docker pull ghcr.io/nokia/srlinux:latest
