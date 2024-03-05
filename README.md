@@ -1,3 +1,5 @@
+NOTE: !! This code now requires SR Linux 23.10 or later, older versions no longer supported !!
+
 # How to use Perl and gNMIc to extend the SR Linux net-snmp module with SET commands to enable/disable interfaces
 
 Nokia SR Linux comes with an SNMP module based on https://github.com/net-snmp/net-snmp. However, the default configuration only supports read access to a small set of OIDs, and sometimes that is not enough. Moreover, SR Linux uses a custom built binary at '/opt/srlinux/bin/snmp_server' which is locked down for security purposes; it lacks common modules such as 'exec' or 'pass' to add custom scripts.
