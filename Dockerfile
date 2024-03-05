@@ -3,17 +3,15 @@ ARG SR_LINUX_RELEASE
 
 FROM $SR_BASEIMG:$SR_LINUX_RELEASE AS target
 
-RUN sudo curl -sL https://github.com/openconfig/gnmic/releases/download/v0.31.0/gnmic_0.31.0_Linux_x86_64.rpm -o /tmp/gnmic.rpm && \
-    sudo yum localinstall -y /tmp/gnmic.rpm && sudo rm -f /tmp/gnmic.rpm
+# Latest version 0.36.1 has issue connecting with local unix socket without port component
+RUN sudo bash -c "$(curl -sL https://get-gnmic.openconfig.net)" -- -v 0.33.0
 
-RUN sudo yum install -y epel-release && \
-    sudo yum install -y net-snmp-perl jq && \
-    sudo pip3 install snmp_passpersist
+RUN sudo apt update && sudo apt install -y libsnmp-perl
 
 # Turn on debugging for SNMP daemon, and replace with /usr/sbin/snmpd
 # Dont read default config
 # Can do -DALL or -Ducd-snmp/pass_persist
-RUN sudo sed -i.orig 's|./snmp_server -M|/usr/sbin/snmpd -C -Lo -Ducd-snmp/pass_persist|g' /opt/srlinux/appmgr/sr_linux_mgr_config.yml
+RUN sudo sed -i.orig 's|./sr_snmp_server -M -c {0}|/usr/sbin/snmpd -C -Lo -Ducd-snmp/pass_persist -M /opt/srlinux/snmp/MIBs:/usr/share/snmp/mibs -c /etc/snmp/snmpd-{0}.conf|g' /opt/srlinux/appmgr/sr_linux_mgr_config.yml
 
 RUN sudo mkdir --mode=0755 -p /opt/demo-agents/
 COPY --chown=srlinux:srlinux ./snmp-set-agent.yml /etc/opt/srlinux/appmgr

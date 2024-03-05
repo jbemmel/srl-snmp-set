@@ -69,7 +69,7 @@ def EnableSNMPSetInterface( network_instance ):
     """
     logging.info( f"EnableSNMPSetInterface network-instance={network_instance}" )
 
-    conf_file = f'/etc/snmp/snmpd.conf_{network_instance}'
+    conf_file = f'/etc/snmp/snmpd-{network_instance}.conf' # Changed in 23.10
 
     # Wait till it exists
     while not os.path.exists( conf_file ):
@@ -80,17 +80,17 @@ def EnableSNMPSetInterface( network_instance ):
       from pathlib import Path
       conf = Path(conf_file).read_text()
       logging.info( f"Old conf: \n{conf}" )
-      new_conf = re.sub( r"access custom_grp .* none none",
+      new_conf = re.sub( 'access converted "" v2c noauth exact supported-views none none',
        '# Custom config by snmp-set-agent to enable interface up/down\n' +
-       'access custom_grp "" any noauth exact sys2view rwview none\n' +
-       'view sys2view included .1.3.6.1.2.1.15\n' +
+       'access converted "" v2c noauth exact supported-views rwview none\n' +
+       'view supported-views included .1.3.6.1.2.1.15\n' +
        # 'perl do "/opt/demo-agents/snmp-set/scripts/snmp_get_tree.pl";\n'
        'pass_persist .1.3.6.1.2.1.15 /opt/demo-agents/snmp-set/bgp4_pp.py\n' +
        'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
        'perl do "/opt/demo-agents/snmp-set/scripts/snmp_write_handler.pl";\n'
-       # 'view sys2view included .1.3.6.1.3.53.9.0\n' +
+       # 'view supported-views included .1.3.6.1.3.53.9.0\n' +
        # 'extend .1.3.6.1.3.53.9.0 /bin/echo hello\n'
-       # 'view sys2view included .1.3.6.1.4.1.8072.9999.9999\n' +
+       # 'view supported-views included .1.3.6.1.4.1.8072.9999.9999\n' +
        # 'perl do "/opt/demo-agents/snmp-set/scripts/hello_snmp_world.pl";\n'
        , conf )
       logging.info( f"New conf: \n{new_conf}" )
@@ -109,7 +109,7 @@ def EnableSNMPSetInterface( network_instance ):
       with os.popen('/usr/bin/ps -AlF') as ps:
         if conf_file in ps.read():
           logging.info( f"Restarting SNMP daemon...using {conf_file}" )
-          os.system(f"/usr/bin/ps -AlF | grep {conf_file} | grep -v grep | awk '{{print $4}}' | xargs kill -9")
+          os.system(f"/usr/bin/ps -AlF | grep '{conf_file}' | grep -v grep | awk '{{print $4}}' | xargs kill -9")
         else:
           logging.info( f"SNMP daemon not yet running...assuming it will use {conf_file}" )
 
