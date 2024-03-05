@@ -121,7 +121,7 @@ def traverse(obj, key, default):
     if len(key) <= 1:
         # we only return if we have one key left
         try:
-            if type(obj) is list:
+            if isinstance(obj,list):
                 obj = obj[0]
             value = obj[key[0]]
         except (KeyError, IndexError):
