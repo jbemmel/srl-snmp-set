@@ -14,8 +14,8 @@ sub myhandler {
         #  Work through the list of varbinds
         #
         $oid = $request->getOID();
-        print STDERR "\n$program @ $oid";
-        if ($request_info->getMode() == MODE_SET) {
+        print STDERR "\n$program @ $oid getMode=" . $request_info->getMode();
+        if ($request_info->getMode() == MODE_SET_ACTION) {
           my $ifindex = (split '\.', $oid)[-1];
           # 1 = enable, 2 = disable (int)
           my $val = ($request->getValue() == 1) ? "enable" : "disable";
