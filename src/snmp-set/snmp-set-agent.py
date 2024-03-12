@@ -83,10 +83,11 @@ def EnableSNMPSetInterface( network_instance ):
       new_conf = re.sub( 'access converted "" v2c noauth exact supported-views none none',
        '# Custom config by snmp-set-agent to enable interface up/down\n' +
        'access converted "" v2c noauth exact supported-views rwview none\n' +
-       'view supported-views included .1.3.6.1.2.1.15\n' +
+       # 'view supported-views included .1.3.6.1.2.1.15\n' +
        # 'perl do "/opt/demo-agents/snmp-set/scripts/snmp_get_tree.pl";\n'
-       'pass_persist .1.3.6.1.2.1.15 /opt/demo-agents/snmp-set/bgp4_pp.py\n' +
-       'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
+       # 'pass_persist .1.3.6.1.2.1.15 /opt/demo-agents/snmp-set/bgp4_pp.py\n' +
+       # 'view rwview included interfaces.ifTable.ifEntry.ifAdminStatus\n' +
+       'view rwview included .1.3.6.1.2.1.2.2.1.7\n' +
        'perl do "/opt/demo-agents/snmp-set/scripts/snmp_write_handler.pl";\n'
        # 'view supported-views included .1.3.6.1.3.53.9.0\n' +
        # 'extend .1.3.6.1.3.53.9.0 /bin/echo hello\n'
@@ -107,9 +108,10 @@ def EnableSNMPSetInterface( network_instance ):
 
       # Check if snmpd is already running, if so restart it
       with os.popen('/usr/bin/ps -AlF') as ps:
-        if conf_file in ps.read():
+        psline = f"sr_snmp_server -M -c {network_instance}"
+        if psline in ps.read():
           logging.info( f"Restarting SNMP daemon...using {conf_file}" )
-          os.system(f"/usr/bin/ps -AlF | grep '{conf_file}' | grep -v grep | awk '{{print $4}}' | xargs kill -9")
+          os.system(f"/usr/bin/ps -AlF | grep '{psline}' | grep -v grep | awk '{{print $4}}' | xargs kill -9")
         else:
           logging.info( f"SNMP daemon not yet running...assuming it will use {conf_file}" )
 

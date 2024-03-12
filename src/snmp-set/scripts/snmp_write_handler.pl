@@ -1,5 +1,6 @@
 use NetSNMP::OID (':all');
 use NetSNMP::agent (':all');
+use NetSNMP::ASN qw(ASN_INTEGER);
 # use NetSNMP::ASN (':all');
 
 #
@@ -25,6 +26,8 @@ sub myhandler {
             $request->setError($request_info, SNMP_ERR_GENERR);
             next
           }
+        } elsif ($request_info->getMode() == MODE_GET) {
+          $request->setValue(ASN_INTEGER, 1) # Always return enabled
         }
     }
 }

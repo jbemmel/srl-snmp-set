@@ -39,6 +39,6 @@ destroy-clab-ci: ## Destroy "ci" test topology
 
 run-tests: # $(TESTS) ## Run all CI tests under test/ci
 	# PYTHONPATH="." python3 $<
-	snmpset -v 2c -c private 172.20.20.2 .1.3.6.1.2.1.2.2.1.7.1073758206 i 0 # Disable
-	snmpset -v 2c -c private 172.20.20.2 .1.3.6.1.2.1.2.2.1.7.1073758206 i 1 # Enable
-	snmpget -v 2c -c private 172.20.20.2 .1.3.6.1.2.1.2.2.1.7.1073758206
+	snmpset -v 2c -c private 172.20.20.2 .1.3.6.1.2.1.2.2.1.7.16382 i 0 # Disable eth-1/1
+	snmpset -v 2c -c private 172.20.20.2 .1.3.6.1.2.1.2.2.1.7.16382 i 1 # Enable
+	snmpget -v 2c -c private 172.20.20.2 .1.3.6.1.2.1.2.2.1.7.16382
