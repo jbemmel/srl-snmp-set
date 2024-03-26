@@ -32,5 +32,5 @@ topology:
        }
        network-instance mgmt
         admin-state enable
-        source-address [172.20.20.2]
+        listen-address [172.20.20.2]
         enable-set-interface true  !!! Agent enabled    
