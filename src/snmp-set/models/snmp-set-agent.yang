@@ -6,7 +6,7 @@ module snmp-set-agent {
 
     prefix "srl_nokia-snmp-set";
 
-    import srl_nokia-snmp {
+    import srl_nokia-system-snmp { // renamed in 24.3.1
         prefix srl_nokia-snmp;
     }
     import srl_nokia-system {
