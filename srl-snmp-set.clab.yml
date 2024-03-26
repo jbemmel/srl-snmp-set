@@ -24,7 +24,12 @@ topology:
        /system grpc-server mgmt unix-socket admin-state enable
        
        /system snmp
-       community private
+       access-group agent {
+        security-level no-auth-no-priv
+        community-entry agent {
+            community private
+        }
+       }
        network-instance mgmt
         admin-state enable
         source-address [172.20.20.2]
