@@ -66,6 +66,8 @@ jobs:
       run: make deploy-clab-ci
     - name: Wait 3 seconds
       run: sleep 3
+    - name: Install gnmic
+      run: sudo bash -c "$(curl -sL https://get-gnmic.openconfig.net)"
     - name: Check converted SNMP config
       run: /usr/local/bin/gnmic -a 172.20.20.2 --skip-verify -u admin -p NokiaSrl1! get --path /system/snmp -e json_ietf
     - name: Run all CI tests under test/ci
