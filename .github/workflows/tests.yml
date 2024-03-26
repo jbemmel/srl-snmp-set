@@ -61,9 +61,7 @@ jobs:
       run: bash -c "$(curl -sL https://get.containerlab.dev)" # -- -v 0.40.0
     - name: start clab ci topo
       run: make deploy-clab-ci
-    - name: Wait 15 seconds
-      run: sleep 15
-    - name: Show logs
-      run: docker logs clab-snmp-set-lab-srl
+    - name: Wait 3 seconds
+      run: sleep 3
     - name: Run all CI tests under test/ci
       run: make run-tests
