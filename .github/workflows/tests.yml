@@ -38,11 +38,11 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.11"]
     needs:
     - tests # Will only run if unit tests pass
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # TODO ideally this would reuse the work from 'tests'
     - name: Set up Python ${{ matrix.python-version }}
@@ -63,5 +63,7 @@ jobs:
       run: make deploy-clab-ci
     - name: Wait 3 seconds
       run: sleep 3
+    - name: Check converted SNMP config
+      run: gnmic -a 172.20.20.2 --skip-verify -u admin -p NokiaSrl1! get --path /system/snmp -e json_ietf
     - name: Run all CI tests under test/ci
       run: make run-tests
