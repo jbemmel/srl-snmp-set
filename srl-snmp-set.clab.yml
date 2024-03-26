@@ -23,14 +23,7 @@ topology:
        # Enable the gNMI Unix socket
        /system grpc-server mgmt unix-socket admin-state enable
        
-       /system snmp
-       access-group agent {
-        security-level no-auth-no-priv
-        community-entry agent {
-            community private
-        }
-       }
-       network-instance mgmt
+       /system snmp network-instance mgmt
         admin-state enable
         listen-address [172.20.20.2]
         enable-set-interface true  !!! Agent enabled    
