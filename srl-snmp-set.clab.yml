@@ -21,7 +21,7 @@ topology:
        /interface lo0 admin-state enable
        
        # Enable the gNMI Unix socket
-       /system gnmi-server unix-socket admin-state enable use-authentication false
+       /system grpc-server unix-socket admin-state enable use-authentication false
        
        /system snmp
        community private

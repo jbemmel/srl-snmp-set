@@ -32,7 +32,7 @@ help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 deploy-clab-ci: build ## Deploy "ci" test topology
-	sudo clab deploy --debug -t srl-snmp-set.clab.yml
+	sudo clab deploy -t srl-snmp-set.clab.yml
 
 destroy-clab-ci: ## Destroy "ci" test topology
 	sudo clab destroy -t srl-snmp-set.clab.yml
