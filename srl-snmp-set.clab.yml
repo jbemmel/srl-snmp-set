@@ -20,12 +20,14 @@ topology:
        # Create an interface to practice on...
        /interface lo0 admin-state enable
        
-       # Enable the gNMI Unix socket
-       /system gnmi-server unix-socket admin-state enable use-authentication false
+       # Enable the gNMI Unix socket, now on port 57401 since 24.3.3
+       # /system gnmi-server unix-socket admin-state enable use-authentication false
        
        /system snmp
-       community private
+       # community private
+       access-group SNMPv2-RO-Community community-entry RO-Community community private
        network-instance mgmt
         admin-state enable
-        source-address [172.20.20.2]
+        # source-address [172.20.20.2]
+        listen-address [172.20.20.2]
         enable-set-interface true  !!! Agent enabled    
