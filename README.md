@@ -1,6 +1,8 @@
 NOTE: !! This repository is no longer being maintained, please contact your Nokia representative for support !!
 It seems that SR Linux GRPC management ports have changed, and the agent can no longer connect
 
+2025/4/24 - repo archived and made read-only
+
 NOTE: !! This code now requires SR Linux 23.10 or later, older versions no longer supported !!
 
 # How to use Perl and gNMIc to extend the SR Linux net-snmp module with SET commands to enable/disable interfaces
