@@ -36,13 +36,13 @@ jobs:
   clab-ci-tests:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 5
+      max-parallel: 6
       matrix:
-        srl-release: ["23.10.1","23.10.2","23.10.3","24.3.2","latest"]
+        srl-release: ["23.10.1","23.10.2","23.10.3","24.3.2","24.10.4","latest"]
     needs:
     - tests # Will only run if unit tests pass
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # TODO ideally this would reuse the work from 'tests'
     - name: Set up Python 3.12
