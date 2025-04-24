@@ -1,4 +1,5 @@
 NOTE: !! This repository is no longer being maintained, please contact your Nokia representative for support !!
+It seems that SR Linux GRPC management ports have changed, and the agent can no longer connect
 
 NOTE: !! This code now requires SR Linux 23.10 or later, older versions no longer supported !!
 
