@@ -1,3 +1,5 @@
+NOTE: !! This repository is no longer being maintained, please contact your Nokia representative for support !!
+
 NOTE: !! This code now requires SR Linux 23.10 or later, older versions no longer supported !!
 
 # How to use Perl and gNMIc to extend the SR Linux net-snmp module with SET commands to enable/disable interfaces
