@@ -80,9 +80,9 @@ def EnableSNMPSetInterface( network_instance ):
       from pathlib import Path
       conf = Path(conf_file).read_text()
       logging.info( f"Old conf: \n{conf}" )
-      new_conf = re.sub( 'access converted "" v2c noauth exact supported-views none none',
+      new_conf = re.sub( 'access SNMP-Agent-RW "" any noauth exact supported-views none none',
        '# Custom config by snmp-set-agent to enable interface up/down\n' +
-       'access converted "" v2c noauth exact supported-views rwview none\n' +
+       'access SNMP-Agent-RW "" any noauth exact supported-views rwview none\n' +
        # 'view supported-views included .1.3.6.1.2.1.15\n' +
        # 'perl do "/opt/demo-agents/snmp-set/scripts/snmp_get_tree.pl";\n'
        # 'pass_persist .1.3.6.1.2.1.15 /opt/demo-agents/snmp-set/bgp4_pp.py\n' +
