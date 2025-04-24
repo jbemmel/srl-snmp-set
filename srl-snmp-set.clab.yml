@@ -25,7 +25,7 @@ topology:
        
        /system snmp
        # community private
-       access-group SNMPv2-RO-Community community-entry RO-Community community private
+       access-group SNMPv2-RW-Community security-level no-auth-no-priv community-entry SNMP-Agent-RW community private
        network-instance mgmt
         admin-state enable
         # source-address [172.20.20.2]
